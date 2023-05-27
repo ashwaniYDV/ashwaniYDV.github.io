@@ -1,9 +1,9 @@
 
 
 var color = "random"; // "random" can be replaced with any valid color ie: "red"...
-var sparkles = 100; // increase of decrease for number of sparkles falling
+var sparkles = 100;// increase of decrease for number of sparkles falling
 
-var x = ox = 400;
+var x = ox = 300;
 var y = oy = 300;
 var swide = 800;
 var shigh = 600;
@@ -19,7 +19,7 @@ var tinyv = new Array();
 
 colors = new Array('#ff0000', '#00ff00', '#ffffff', '#ff00ff', '#ffa500', '#ffff00', '#00ff00', '#ffffff', 'ff00ff')
 
-n = 10;
+n = 1;
 y = 0;
 x = 0;
 n6 = (document.getElementById && !document.all);
@@ -75,14 +75,15 @@ function animate() {
             temp1.top = parseInt(temp2.top) + 'px';
             temp1.left = parseInt(temp2.left) + 'px';
 
-        } else {
+        }
+        else {
 
             temp1.top = y + o + 'px';
             temp1.left = x + 'px';
         }
     }
 
-    setTimeout("animate()", 10);
+    setTimeout("animate()", 1);
 }
 
 animate();
@@ -101,14 +102,12 @@ window.onload = function () {
             rats.style.backgroundColor = "transparent";
             rats.style.visibility = "hidden";
             rats.style.zIndex = "999";
-            var rlef = createDiv(1, 5);
-            var rdow = createDiv(5, 1);
+            var rlef = createDiv(5, 5);
+            var rdow = createDiv(5, 5);
             rats.appendChild(rlef);
             rats.appendChild(rdow);
-            rlef.style.top = "2px";
-            rlef.style.left = "0px";
-            rdow.style.top = "0px";
-            rdow.style.left = "2px";
+            rlef.style.borderRadius = "50%";
+            rdow.style.borderRadius = "50%";
             document.body.appendChild(star[i] = rats);
         }
         set_width();
