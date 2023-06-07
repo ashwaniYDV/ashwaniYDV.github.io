@@ -1,0 +1,6 @@
+[submodule "blog/themes/LoveIt"]
+	path = blog/themes/LoveIt
+	url = https://github.com/dillonzq/LoveIt
+[submodule "blog/themes/ananke"]
+	path = blog/themes/ananke
+	url = https://github.com/theNewDynamic/gohugo-theme-ananke
