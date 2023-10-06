@@ -1,7 +1,7 @@
 #!/bin/sh
 
-echo "pull master"
-git pull origin master
+# echo "pull master"
+# git pull origin master
 
 echo "npm run build"
 npm run build
