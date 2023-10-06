@@ -1,13 +1,17 @@
-import { BrowserRouter, Route, RouterProvider, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import React from "react";
-import router from "./Router";
+import Journal from "./Journal/Journal";
+import Home from "./Home/Home";
 
 
 function App() {
 	return (
-		<React.StrictMode>
-			<RouterProvider router={router} />
-		</React.StrictMode>
+		<BrowserRouter>
+			<Routes>
+				<Route exact path="/journal" element={<Journal />}></Route>
+				<Route path="/*" element={<Home />}></Route>
+			</Routes>
+		</BrowserRouter>
 	);
 }
 
