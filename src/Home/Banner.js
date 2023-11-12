@@ -28,7 +28,7 @@ function Banner() {
 					<h2 id="headtext" className="notr myfont" style={{textAlign: "center"}}><b>Ashwani Yadav</b></h2>
 					
 					<p className="notr myfont" style={{textAlign: "center"}}>
-						<span>धर्मो रक्षति रक्षितः</span>
+						<span>यतो धर्मस्ततो जयः</span>
 						<br/>
 						<a target="_blank" href="https://linkedin.com/in/ashwaniydv" className="fa
 							faw-up fa-linkedin"></a>
