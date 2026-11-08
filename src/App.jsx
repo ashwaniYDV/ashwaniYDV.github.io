@@ -16,7 +16,8 @@ import { useBodyClass, useRevealOnScroll } from "./hooks.js";
 export default function App() {
   const { pathname, hash, key } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  // Tool pages are full-screen apps: navbar only, no footer or floating widgets.
+  // Tool pages are full-screen apps: no navbar, footer or floating widgets.
+  // The tool's own toolbar carries the "‹ Utils" link back.
   const isToolPage = Boolean(getUtil(pathname.match(/^\/utils\/([^/]+)\/?$/)?.[1]));
   useBodyClass("is-tool-page", isToolPage);
   useBodyClass("is-menu-visible", menuOpen);
@@ -40,7 +41,7 @@ export default function App() {
   return (
     <>
       <div id="page-wrapper">
-        <Header hasBanner={pathname === "/"} onMenuToggle={() => setMenuOpen((open) => !open)} />
+        {!isToolPage && <Header hasBanner={pathname === "/"} onMenuToggle={() => setMenuOpen((open) => !open)} />}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/blog" element={<BlogIndex />} />
@@ -52,7 +53,7 @@ export default function App() {
         {!isToolPage && <Footer />}
       </div>
 
-      <Menu open={menuOpen} onClose={() => setMenuOpen(false)} />
+      {!isToolPage && <Menu open={menuOpen} onClose={() => setMenuOpen(false)} />}
       {!isToolPage && <JioSaavnWidget />}
     </>
   );

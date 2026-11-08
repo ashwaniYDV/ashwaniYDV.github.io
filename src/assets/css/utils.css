@@ -1,8 +1,7 @@
 /* Utils section: index cards + shared tool chrome + per-tool layout. */
 
 /* ---------- Full-screen tool pages ----------
- * Navbar on top (fixed, 3.5em; 2.75em on small screens), then the tool fills
- * the rest of the viewport. Each tool root is a flex column:
+ * No site navbar: the tool fills the whole viewport. Each tool root is a flex column:
  *   .util-toolbar (heading + controls) -> body (flex: 1) -> .util-statusbar
  */
 body.is-tool-page {
@@ -15,12 +14,12 @@ body.is-tool-page {
   box-sizing: border-box;
   height: 100vh;
   height: 100dvh;
-  padding: calc(3.5em + 0.75em) 1.25em 0.5em;
+  padding: 0.75em 1.25em 0.5em;
 }
 
 @media screen and (max-width: 736px) {
   .tool-page {
-    padding: calc(2.75em + 0.5em) 0.75em 0.4em;
+    padding: 0.5em 0.75em 0.4em;
   }
 }
 

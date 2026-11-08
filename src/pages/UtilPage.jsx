@@ -42,8 +42,8 @@ function ToolHeading({ util }) {
 }
 
 /**
- * Full-screen tool layout: just the site navbar on top, then the tool fills
- * the rest of the viewport (App hides the footer and floating widgets here).
+ * Full-screen tool layout: the tool fills the whole viewport. App hides the
+ * site navbar, menu, footer and floating widgets on these pages.
  */
 export default function UtilPage() {
   const { slug } = useParams();
