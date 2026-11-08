@@ -1,0 +1,59 @@
+/* Blog additions on top of the Solid State theme. */
+
+.post-meta {
+  font-size: 0.8em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin-bottom: 1.5em;
+}
+
+.post-tag + .post-tag {
+  margin-left: 0.6em;
+}
+
+.post-body {
+  max-width: 46em;
+}
+
+.post-body h2,
+.post-body h3 {
+  margin-top: 2em;
+}
+
+.post-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.post-body pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em 1.25em;
+  border-radius: 5px;
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+/* Tables scroll instead of overflowing on narrow screens. */
+.post-body table {
+  display: block;
+  overflow-x: auto;
+}
+
+.post-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  margin-top: 3em;
+  padding-top: 2em;
+  border-top: solid 2px rgba(255, 255, 255, 0.125);
+}
+
+.blog-rss {
+  margin-top: 2em;
+  font-size: 0.9em;
+}

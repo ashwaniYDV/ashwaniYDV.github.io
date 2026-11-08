@@ -1,29 +1,17 @@
 import { useEffect, useState } from "react";
+import { Route, Routes, useLocation } from "react-router";
 import Header from "./components/Header.jsx";
 import Menu from "./components/Menu.jsx";
-import Banner from "./components/Banner.jsx";
-import About from "./components/About.jsx";
-import Spotlight from "./components/Spotlight.jsx";
-import Projects from "./components/Projects.jsx";
-import Etc from "./components/Etc.jsx";
 import Footer from "./components/Footer.jsx";
 import JioSaavnWidget from "./components/JioSaavnWidget.jsx";
-import { education, work } from "./data";
+import Home from "./pages/Home.jsx";
+import BlogIndex from "./pages/BlogIndex.jsx";
+import BlogPost from "./pages/BlogPost.jsx";
+import NotFound from "./pages/NotFound.jsx";
 import { useBodyClass, usePointerSparkles } from "./hooks.js";
 
-function SectionTitle({ children }) {
-  return (
-    <>
-      <br />
-      <h1 style={{ fontSize: "3em", textAlign: "center" }} className="myfont">
-        {children}
-      </h1>
-      <br />
-    </>
-  );
-}
-
 export default function App() {
+  const { pathname, hash } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   useBodyClass("is-menu-visible", menuOpen);
   usePointerSparkles();
@@ -34,42 +22,21 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // Client-side navigation keeps the old scroll position; start new pages at the top.
+  useEffect(() => {
+    if (!hash) window.scrollTo(0, 0);
+  }, [pathname, hash]);
+
   return (
     <>
       <div id="page-wrapper">
-        <Header onMenuToggle={() => setMenuOpen((open) => !open)} />
-        <Banner />
-
-        <section id="wrapper">
-          <About />
-
-          <SectionTitle>Worked</SectionTitle>
-          {work.map((item, i) => (
-            <Spotlight
-              key={item.title}
-              {...item}
-              anchor={i === work.length - 1 ? "alma-matter" : undefined}
-            />
-          ))}
-
-          <SectionTitle>Alma mater</SectionTitle>
-          {education.map((item, i) => (
-            <Spotlight
-              key={item.title}
-              {...item}
-              anchor={i === education.length - 1 ? "projects" : undefined}
-            />
-          ))}
-          <br />
-
-          <SectionTitle>Projects</SectionTitle>
-          <Projects />
-          <br />
-
-          <SectionTitle>Etc.</SectionTitle>
-          <Etc />
-        </section>
-
+        <Header hasBanner={pathname === "/"} onMenuToggle={() => setMenuOpen((open) => !open)} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/blog" element={<BlogIndex />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
         <Footer />
       </div>
 

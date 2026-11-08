@@ -2,10 +2,11 @@
   "resumeUrl": "https://drive.google.com/file/d/1kv5wctnszrn-0KLncFzsKl2DrmXp8saM/view?usp=sharing",
   "formspreeUrl": "https://formspree.io/mqkygoae",
   "menuLinks": [
-    { "label": "Home", "href": "#" },
-    { "label": "Intro", "href": "#intro" },
-    { "label": "Worked", "href": "#worked" },
-    { "label": "Alma-Matter", "href": "#alma-matter" },
-    { "label": "Projects", "href": "#projects" }
+    { "label": "Home", "href": "/" },
+    { "label": "Intro", "href": "/#intro" },
+    { "label": "Worked", "href": "/#worked" },
+    { "label": "Alma-Matter", "href": "/#alma-matter" },
+    { "label": "Projects", "href": "/#projects" },
+    { "label": "Blog", "href": "/blog" }
   ]
 }

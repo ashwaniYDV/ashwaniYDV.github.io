@@ -12,6 +12,13 @@ export function useBodyClass(className, active) {
   }, [className, active]);
 }
 
+/** Keep document.title in sync during client-side navigation. */
+export function usePageTitle(title) {
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+}
+
 /** Same settings the original page passed to tilt.jquery. */
 export function useTilt() {
   const ref = useRef(null);
