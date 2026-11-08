@@ -18,8 +18,10 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   // Tool pages are full-screen apps: no navbar, footer or floating widgets.
   // The tool's own toolbar carries the "‹ Utils" link back.
-  const isToolPage = Boolean(getUtil(pathname.match(/^\/utils\/([^/]+)\/?$/)?.[1]));
-  useBodyClass("is-tool-page", isToolPage);
+  const tool = getUtil(pathname.match(/^\/utils\/([^/]+)\/?$/)?.[1]);
+  const isToolPage = Boolean(tool);
+  // Viewport-locked tools stop the page itself from scrolling.
+  useBodyClass("is-tool-fixed", isToolPage && !tool.scrollable);
   useBodyClass("is-menu-visible", menuOpen);
   useRevealOnScroll(pathname);
 

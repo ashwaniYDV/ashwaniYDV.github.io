@@ -55,7 +55,7 @@ export default function UtilPage() {
   const heading = <ToolHeading util={util} />;
 
   return (
-    <main className="tool-page">
+    <main className={util.scrollable ? "tool-page is-scrollable" : "tool-page"}>
       <UtilErrorBoundary key={slug}>
         <Suspense
           fallback={

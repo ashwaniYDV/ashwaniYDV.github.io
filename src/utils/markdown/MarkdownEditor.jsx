@@ -1,4 +1,4 @@
-import { useDeferredValue, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Marked } from "marked";
 import DOMPurify from "dompurify";
 import hljs from "highlight.js/lib/core";
@@ -88,6 +88,31 @@ export default function MarkdownEditor({ heading }) {
   const [doc, setDoc, status] = useLocalStorage("markdown:doc", SAMPLE, { debounceMs: 400 });
   const [view, setView] = useLocalStorage("markdown:view", "split");
   const [copied, setCopied] = useState(false);
+  const textareaRef = useRef(null);
+
+  // The page scrolls as a whole, so the textarea grows to fit its content
+  // instead of scrolling inside itself. CSS min-height keeps short docs full-screen.
+  const fitTextarea = () => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight + 2}px`; // +2: borders
+  };
+  useLayoutEffect(fitTextarea, [doc, view]);
+  useEffect(() => {
+    // Re-wrap on width changes (window resize, split <-> write).
+    const el = textareaRef.current;
+    if (!el) return undefined;
+    let lastWidth = el.clientWidth;
+    const observer = new ResizeObserver(() => {
+      if (el.clientWidth !== lastWidth) {
+        lastWidth = el.clientWidth;
+        fitTextarea();
+      }
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // Keep typing responsive on long documents: render the preview at lower priority.
   const deferredDoc = useDeferredValue(doc);
@@ -145,6 +170,7 @@ export default function MarkdownEditor({ heading }) {
             Markdown source
           </label>
           <textarea
+            ref={textareaRef}
             id="md-text"
             value={doc}
             onChange={(e) => setDoc(e.target.value)}

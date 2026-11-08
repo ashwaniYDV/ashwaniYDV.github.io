@@ -10,6 +10,9 @@ import { lazy } from "react";
  *      (see `.tool-page` in assets/css/utils.css).
  *      Persist its state with useLocalStorage("<slug>", initial) from ../useLocalStorage.js.
  *   2. Add an entry below. `icon` is any Font Awesome 4.7 class (https://fontawesome.com/v4/icons/).
+ *      Layout: by default the tool is locked to the viewport (the page itself never
+ *      scrolls; good for canvases and app-like UIs). Set `scrollable: true` for
+ *      document-like tools: the page scrolls, content grows, the toolbar sticks.
  *
  * Components are lazy-loaded, so a utility's code only downloads when it is opened.
  * Routing, the index card, page title and the pre-rendered page are all derived from this list.
@@ -27,6 +30,7 @@ export const utils = [
     title: "Markdown editor",
     icon: "fa-file-text-o",
     summary: "Write Markdown with a live, syntax-highlighted preview. Export as .md.",
+    scrollable: true,
     Component: lazy(() => import("./markdown/MarkdownEditor.jsx")),
   },
   {
