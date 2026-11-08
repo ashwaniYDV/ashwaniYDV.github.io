@@ -12,13 +12,16 @@ export default function LatestPosts({ limit = 2 }) {
       <div className="inner">
         <section className="features">
           {latest.map((post) => (
-            <article key={post.slug} className="reveal">
+            <article key={post.slug} className="post-card reveal">
               <h3 className="major">
-                <Link to={`/blog/${post.slug}`}>{post.title}</Link>
+                <Link to={`/blog/${post.slug}`} className="post-card-link">
+                  {post.title}
+                </Link>
               </h3>
               <PostMeta post={post} />
               {post.summary && <p>{post.summary}</p>}
-              <Link to={`/blog/${post.slug}`} className="special">
+              {/* Duplicate of the stretched title link: keep it out of the tab order. */}
+              <Link to={`/blog/${post.slug}`} className="special" tabIndex={-1} aria-hidden="true">
                 Read post
               </Link>
             </article>

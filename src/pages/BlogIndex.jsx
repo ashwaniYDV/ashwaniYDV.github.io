@@ -16,13 +16,16 @@ export default function BlogIndex() {
       ) : (
         <section className="features">
           {posts.map((post) => (
-            <article key={post.slug}>
+            <article key={post.slug} className="post-card">
               <h3 className="major">
-                <Link to={`/blog/${post.slug}`}>{post.title}</Link>
+                <Link to={`/blog/${post.slug}`} className="post-card-link">
+                  {post.title}
+                </Link>
               </h3>
               <PostMeta post={post} />
               {post.summary && <p>{post.summary}</p>}
-              <Link to={`/blog/${post.slug}`} className="special">
+              {/* Duplicate of the stretched title link: keep it out of the tab order. */}
+              <Link to={`/blog/${post.slug}`} className="special" tabIndex={-1} aria-hidden="true">
                 Read post
               </Link>
             </article>

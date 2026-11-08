@@ -216,6 +216,35 @@
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35), inset 0 2px 0 0 var(--accent-2);
 }
 
+/* Blog cards: the title link stretches over the whole card, so a click anywhere
+   opens the post while keyboard/middle-click/"open in new tab" still work. */
+.features article.post-card {
+  position: relative;
+  cursor: pointer;
+}
+
+.post-card .post-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.post-card .post-card-link:focus {
+  outline: none;
+}
+
+.post-card:focus-within {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+}
+
+/* Hovering anywhere on the card lights up the "Read post" arrow. */
+.post-card:hover a.special:not(.button):before {
+  background-color: rgba(255, 255, 255, 0.075);
+  border-color: var(--accent-2);
+}
+
 /* ---------- Reveal on scroll (hidden only once JS opts in) ---------- */
 .js-reveal .reveal {
   opacity: 0;
