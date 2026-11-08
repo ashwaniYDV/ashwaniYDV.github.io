@@ -1,0 +1,15 @@
+/*
+ * The v1 page had no <!doctype>, so browsers rendered it in quirks mode.
+ * This page uses standards mode; these rules reproduce the quirks-mode look.
+ */
+
+/* Quirks mode resolved `min-height: 90%` against the viewport. */
+#banner {
+  min-height: 90vh !important;
+}
+
+/* Quirks mode let .faw-up's 30px win over Font Awesome's `.fa { font: 14px/1 }`. */
+#banner .faw-up {
+  font-size: 30px !important;
+  line-height: 1;
+}
