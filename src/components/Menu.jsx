@@ -1,4 +1,4 @@
-import { menuLinks } from "../data.jsx";
+import { menuLinks } from "../data";
 
 // Matches the 350ms close transition from the Solid State theme.
 const CLOSE_DELAY_MS = 350;

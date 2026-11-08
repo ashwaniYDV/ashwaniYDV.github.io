@@ -1,8 +1,11 @@
-import { img } from "../data.jsx";
+import { img } from "../data";
+import RichText from "./RichText.jsx";
 
-/** One alternating "spotlight" row used for work and education entries. */
+// JSON `variant` values mapped to the Solid State wrapper classes.
+const VARIANT_CLASSES = { light: "style1", dark: "style2 alt" };
 const DEFAULT_TITLE_STYLE = { textTransform: "none" };
 
+/** One alternating "spotlight" row used for work and education entries. */
 export default function Spotlight({
   variant,
   title,
@@ -22,7 +25,7 @@ export default function Spotlight({
   const external = url ? { href: url, target: "_blank", rel: "noreferrer" } : { href: "#" };
 
   return (
-    <section className={`wrapper spotlight ${variant}`}>
+    <section className={`wrapper spotlight ${VARIANT_CLASSES[variant] ?? VARIANT_CLASSES.light}`}>
       <div className="inner">
         <a {...external} className={imageClass}>
           <img src={img(image)} alt={title} className={flatImage ? "zeroradius" : undefined} style={imageStyle} />
@@ -33,10 +36,14 @@ export default function Spotlight({
           </h2>
           {lines.map((line, i) => (
             <h3 key={i} className="nomargin myfont">
-              {line}
+              <RichText text={line} />
             </h3>
           ))}
-          {description && <p>{description}</p>}
+          {description && (
+            <p>
+              <RichText text={description} />
+            </p>
+          )}
           {links.map(({ label, url: href }) => (
             <a key={label} href={href} target="_blank" rel="noreferrer" className={linkClassName}>
               {label}

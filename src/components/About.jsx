@@ -1,4 +1,4 @@
-import { img } from "../data.jsx";
+import { img } from "../data";
 import { useTilt } from "../hooks.js";
 
 export default function About() {

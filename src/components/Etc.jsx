@@ -1,4 +1,4 @@
-import { img } from "../data.jsx";
+import { img } from "../data";
 
 export default function Etc() {
   return (

@@ -1,4 +1,4 @@
-import { RESUME_URL, socials } from "../data.jsx";
+import { RESUME_URL, socials } from "../data";
 import { useTilt } from "../hooks.js";
 
 export default function Banner() {

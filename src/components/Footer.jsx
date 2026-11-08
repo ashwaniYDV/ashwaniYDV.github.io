@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FORMSPREE_URL, socials } from "../data.jsx";
+import { FORMSPREE_URL, socials } from "../data";
 
 const contactOrder = ["LinkedIn", "GitHub", "Facebook", "Instagram", "Twitter"];
 

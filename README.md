@@ -15,7 +15,17 @@ npm run preview  # serve the built dist/ locally
 
 ## Editing content
 
-All text, links and images live in `src/data.jsx`. Images are in `src/assets/images/`, theme CSS in `src/assets/css/`.
+All text and links live in JSON files under `src/data/`:
+
+| File | Contents |
+|---|---|
+| `site.json` | Resume link, Formspree endpoint, menu links |
+| `socials.json` | Social profile links (banner + footer) |
+| `work.json` | "Worked" section entries |
+| `education.json` | "Alma mater" section entries |
+| `projects.json` | "Projects" highlights |
+
+Text fields support `\n` for a line break and `**bold**`. For work/education entries, `variant` is `"light"` or `"dark"` (alternate them), and `image` is a file name in `src/assets/images/`. Theme CSS is in `src/assets/css/`.
 
 ## Deploy
 

@@ -8,7 +8,7 @@ import Projects from "./components/Projects.jsx";
 import Etc from "./components/Etc.jsx";
 import Footer from "./components/Footer.jsx";
 import JioSaavnWidget from "./components/JioSaavnWidget.jsx";
-import { education, work } from "./data.jsx";
+import { education, work } from "./data";
 import { useBodyClass, usePointerSparkles } from "./hooks.js";
 
 function SectionTitle({ children }) {

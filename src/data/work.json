@@ -1,0 +1,113 @@
+[
+  {
+    "variant": "dark",
+    "title": "Amazon - SDE2",
+    "url": "https://amazon.com/",
+    "image": "amzn1.gif",
+    "imageStyle": { "borderRadius": "20%", "width": "70%" },
+    "lines": ["Joined 'Seller Fulfilment Tech' Team .", "May 2025 – Present"],
+    "description": "Got exposure to AWS, compliance, governance, etc"
+  },
+  {
+    "variant": "light",
+    "title": "Twilio - SDE2",
+    "url": "https://twilio.com/",
+    "image": "twilio.gif",
+    "imageStyle": { "borderRadius": "20%", "width": "70%" },
+    "lines": [
+      "Joined 'Data Governance & Insights' Team as a backend developer.",
+      "Dec 2024 – May 2025"
+    ],
+    "description": "Got exposure to Data Platform, Big Data Pipelines, Spark, Clickhouse, Kubernetes, Service-mesh, etc"
+  },
+  {
+    "variant": "dark",
+    "title": "Flipkart - SDE1",
+    "url": "https://flipkart.com/",
+    "image": "flipkart-gif.gif",
+    "imageStyle": { "borderRadius": "20%", "width": "40%" },
+    "lines": [
+      "Working as a SDE in the Marketplace (Seller Support) Team",
+      "June 2022 – March 2023"
+    ],
+    "description": "Got exposure to Java Dropwizard, Kafka, ElasticSearch"
+  },
+  {
+    "variant": "light",
+    "title": "Zomato- SDE Intern",
+    "url": "https://zomato.com/",
+    "image": "zomato3.gif",
+    "imageStyle": { "borderRadius": "20%" },
+    "lines": ["Worked in Logistics Tech Team as a backend developer.", "Jan – April 2022"],
+    "description": "Got exposure to Apache Kafka, Elastic Search, Pub-Sub, gRPC, Microservices in Golang, Ruby on Rails"
+  },
+  {
+    "variant": "dark",
+    "title": "Success Numbers Pvt. Ltd. - SWE Intern",
+    "url": "https://snumbers.com/",
+    "image": "snumbers.png",
+    "flatImage": true,
+    "lines": [
+      "Worked on OMS (Order Management System) and developed microservices for tracking whole order life-cycle",
+      "May – July 2021"
+    ],
+    "description": "Developed various API’s in the OMS-backend in Springboot and developed admin portal in React. Added lambda functions in AWS for serverless functionalities and integrated SNS and SQS for managing order fulfilments and inventories. Got exposure to Java, Springboot, JPA, Hibernate, React, AWS (Lambda, SNS, SQS, SES)"
+  },
+  {
+    "variant": "light",
+    "title": "Scaler (by Interviewbit) - DSA Teaching Assistant",
+    "url": "https://scaler.com/",
+    "image": "scaler.svg",
+    "flatImage": true,
+    "lines": ["Worked as a teaching assistant for DSA and System Design.", "2021 – 2023"],
+    "description": "Worked as a teaching assistant + mentoring + solving doubts of university students and working professionals in Data Structures & Algorithms."
+  },
+  {
+    "variant": "dark",
+    "title": "Google Summer of Code - Sophomore year",
+    "url": "https://summerofcode.withgoogle.com/",
+    "image": "gsoc_logo.png",
+    "flatImage": true,
+    "lines": [
+      "Student developer at GSoC 2020 for RocketChat",
+      "Omnichannel: Add screen sharing feature in the Livechat widget",
+      "May – September 2020"
+    ],
+    "description": "Rocket.Chat is the **world's largest open source** communications platform.\nI worked with Rocket.Chat organization where I implemented screen sharing feature in the live-chat widget by developing a generic screen-sharing provider. Implemented API’s in RocketChat’s JS-SDK so that agents could get real-time screen-share on customer’s devices. Got exposure to Typescript, MeteorJS, RocketChat SDK, RocketChat Apps-Engine, MongoDB, Dependency Inversion",
+    "links": [
+      {
+        "label": "View project",
+        "url": "https://summerofcode.withgoogle.com/archive/2020/projects/4804104636858368/"
+      },
+      {
+        "label": "GSoC Work Report",
+        "url": "https://gist.github.com/ashwaniYDV/d8fcd258e3725bde8e10eac669de5f80"
+      }
+    ]
+  },
+  {
+    "variant": "light",
+    "title": "Inter IIT Tech Meet 8.0, IIT Roorkee",
+    "url": "https://www.facebook.com/interiit.tech",
+    "image": "interiittechmmeet.png",
+    "flatImage": true,
+    "lines": [
+      "I with my team won Gold Medal for the event \"Ashoka's Tech for Change\"",
+      "Fullstack Web and Blockchain Developer",
+      "October – December 2019"
+    ],
+    "description": "Problem Statement: With the vision, “Technology is not an end in itself, it’s a means to an end”, participants are supposed to develop a product using technology to solve an existing societal problem. Also, form a suitable business model around the same.",
+    "links": [{ "label": "Inter IIT Tech Meet", "url": "https://www.facebook.com/interiit.tech" }]
+  },
+  {
+    "variant": "dark",
+    "title": "NJACK IITPatna",
+    "titleStyle": null,
+    "url": "https://njack.iitp.ac.in/",
+    "image": "njackLogo.png",
+    "flatImage": true,
+    "lines": ["Advisor: Development & Open Source", "Sep 2019 – Present\nLocation: IIT Patna"],
+    "description": "NJACK (Not Just Another Computer Science Klub!) is the official Computer Science Club of IIT Patna",
+    "links": [{ "label": "Visit site", "url": "https://njack.iitp.ac.in/" }]
+  }
+]

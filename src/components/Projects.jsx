@@ -1,4 +1,4 @@
-import { projects } from "../data.jsx";
+import { projects } from "../data";
 
 export default function Projects() {
   return (

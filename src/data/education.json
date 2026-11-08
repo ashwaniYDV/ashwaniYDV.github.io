@@ -1,0 +1,29 @@
+[
+  {
+    "variant": "light",
+    "title": "Indian Institute of Technology, Patna - IIT P",
+    "titleStyle": { "textTransform": "none", "fontFamily": "'Josefin Sans', sans-serif" },
+    "url": "https://www.iitp.ac.in/",
+    "image": "iitp.png",
+    "flatImage": true,
+    "lines": ["Bachelors in Technology", "Major: Electrical Engineering"],
+    "description": "The Indian Institute of Technology Patna is an autonomous institute of education and research in science, engineering and technology located in Patna, India. It is recognized as an Institute of National Importance by the Government of India.",
+    "linkClassName": "special myfont",
+    "links": [{ "label": "Learn more", "url": "https://www.iitp.ac.in/" }]
+  },
+  {
+    "variant": "dark",
+    "title": "Methodist High School, Kanpur",
+    "titleClassName": "major myfont",
+    "titleStyle": null,
+    "image": "mhs.png",
+    "lines": ["Primary-Middle-High School"],
+    "linkClassName": "special myfont",
+    "links": [
+      {
+        "label": "Learn more",
+        "url": "https://en.wikipedia.org/wiki/Methodist_High_School,_Kanpur"
+      }
+    ]
+  }
+]
