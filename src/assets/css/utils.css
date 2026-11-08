@@ -25,6 +25,7 @@ body.is-tool-fixed {
 
 .tool-page > .notepad,
 .tool-page > .md-editor,
+.tool-page > .diff-checker,
 .tool-page > .whiteboard {
   display: flex;
   flex: 1;
@@ -482,6 +483,242 @@ body.is-tool-fixed {
   .is-scrollable .md-editor.view-split .md-preview {
     min-height: 50vh;
     min-height: 50dvh;
+  }
+}
+
+/* ---------- Text diff checker ---------- */
+/* Many controls: tighten spacing so the toolbar fits on one row at ~1280px+. */
+.diff-checker .util-toolbar {
+  gap: 0.4em;
+}
+
+.diff-checker .util-toolbar .button.small {
+  padding: 0 0.8em;
+}
+
+.diff-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0 0.2em;
+  font-size: 0.75em;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* The theme hides native checkboxes in favour of label pseudo-elements; use real ones here. */
+.diff-option input[type="checkbox"] {
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  position: static;
+  opacity: 1;
+  width: 1em;
+  height: 1em;
+  margin: 0;
+  z-index: auto;
+  accent-color: var(--accent-2, #ff8fb1);
+}
+
+.diff-option span {
+  padding: 0 !important;
+}
+
+.diff-option span::before,
+.diff-option span::after {
+  display: none !important;
+}
+
+.diff-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1em;
+}
+
+.diff-input {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  min-width: 0;
+}
+
+.diff-input-label {
+  margin-bottom: 0.35em;
+  font-size: 0.75em;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.tool-page .diff-input textarea {
+  height: 15em;
+  resize: vertical;
+  padding: 0.9em 1.1em;
+  font-family: "Courier New", monospace;
+  font-size: 0.85em;
+  line-height: 1.6;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  caret-color: #e5484d;
+}
+
+.tool-page .diff-input textarea:focus {
+  border-color: #c9c4b8;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(255, 143, 177, 0.45);
+}
+
+.diff-result {
+  margin-top: 1.25em;
+  padding: 1em 1.25em 1.25em;
+  border-radius: 6px;
+  background-color: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.diff-result-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5em 1.25em;
+  margin-bottom: 0.75em;
+}
+
+/* `#root` beats the theme's `h2:not(#headtext)` heading colour. */
+#root .diff-result-header h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.95em;
+}
+
+.diff-stats {
+  display: inline-flex;
+  gap: 0.9em;
+  font-size: 0.85em;
+  color: var(--ink-soft);
+}
+
+.diff-stat-add {
+  color: #1a7f37;
+  font-weight: 700;
+}
+
+.diff-stat-del {
+  color: #cf222e;
+  font-weight: 700;
+}
+
+.diff-empty {
+  margin: 0;
+  padding: 1.5em 0;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.diff-grid {
+  overflow: hidden;
+  border: solid 1px var(--paper-rule);
+  border-radius: 6px;
+  font-family: "Courier New", monospace;
+  font-size: 0.8em;
+  line-height: 1.55;
+}
+
+.d-row {
+  display: grid;
+}
+
+.diff-split .d-row {
+  grid-template-columns: 3.25em minmax(0, 1fr) 3.25em minmax(0, 1fr);
+}
+
+.diff-unified .d-row {
+  grid-template-columns: 3.25em 3.25em 1.5em minmax(0, 1fr);
+}
+
+.d-num {
+  padding: 0 0.6em;
+  text-align: right;
+  color: #8c90a0;
+  background-color: #f3f1ec;
+  user-select: none;
+}
+
+.diff-split .d-row > .d-num:nth-child(3) {
+  border-left: solid 1px var(--paper-rule);
+}
+
+.d-code {
+  padding: 0 0.75em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  min-height: 1.55em;
+}
+
+.d-sign {
+  text-align: center;
+  user-select: none;
+}
+
+.d-code.is-del,
+.d-sign.is-del {
+  background-color: #ffebe9;
+}
+
+.d-code.is-add,
+.d-sign.is-add {
+  background-color: #e6ffec;
+}
+
+.d-sign.is-del {
+  color: #cf222e;
+}
+
+.d-sign.is-add {
+  color: #1a7f37;
+}
+
+.d-code.is-empty {
+  background: repeating-linear-gradient(-45deg, #f6f4ef, #f6f4ef 5px, #efece5 5px, #efece5 10px);
+}
+
+.d-code mark {
+  padding: 0.05em 0;
+  border-radius: 3px;
+  color: inherit;
+}
+
+.d-code mark.dw-del {
+  background-color: rgba(255, 129, 130, 0.45);
+  text-decoration: line-through;
+  text-decoration-color: rgba(207, 34, 46, 0.5);
+}
+
+.d-code mark.dw-add {
+  background-color: rgba(74, 194, 107, 0.4);
+}
+
+.d-skip {
+  display: block;
+  padding: 0.25em 1em;
+  text-align: center;
+  color: #0b66c3;
+  background-color: #eef4fb;
+  border-top: solid 1px var(--paper-rule);
+  border-bottom: solid 1px var(--paper-rule);
+  font-family: "Source Sans Pro", Helvetica, sans-serif;
+  font-size: 0.95em;
+}
+
+@media screen and (max-width: 980px) {
+  .diff-inputs {
+    grid-template-columns: 1fr;
   }
 }
 

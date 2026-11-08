@@ -34,6 +34,14 @@ export const utils = [
     Component: lazy(() => import("./markdown/MarkdownEditor.jsx")),
   },
   {
+    slug: "diff",
+    title: "Text diff checker",
+    icon: "fa-exchange",
+    summary: "Compare two texts side by side or unified, with word-level highlights and patch export.",
+    scrollable: true,
+    Component: lazy(() => import("./diff/DiffChecker.jsx")),
+  },
+  {
     slug: "whiteboard",
     title: "Whiteboard",
     icon: "fa-paint-brush",
