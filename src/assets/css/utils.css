@@ -235,6 +235,118 @@ body.is-tool-page {
   line-height: 1.7;
 }
 
+/* ---------- Paper surfaces (notepad editor, markdown panes) ----------
+ * Solid off-white with dark text instead of the theme's translucent dark
+ * fields, so the background photo doesn't show through what you're writing.
+ */
+:root {
+  --paper: #fbfaf7;
+  --ink: #1f2330;
+  --ink-soft: #4b5163;
+  --paper-rule: #e3e0d8;
+}
+
+.tool-page .notepad-editor textarea,
+.tool-page .md-input textarea,
+.tool-page .md-preview {
+  background-color: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.tool-page .notepad-editor textarea,
+.tool-page .md-input textarea {
+  padding: 1em 1.25em;
+  caret-color: #e5484d;
+}
+
+.tool-page .notepad-editor textarea:focus,
+.tool-page .md-input textarea:focus {
+  border-color: #c9c4b8;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(255, 143, 177, 0.45);
+}
+
+.tool-page .notepad-editor textarea::placeholder,
+.tool-page .md-input textarea::placeholder {
+  color: #9a9fae;
+}
+
+/* Theme assumes white text on dark: re-ink the preview's elements. */
+.md-preview h1,
+.md-preview h2,
+.md-preview h3,
+.md-preview h4,
+.md-preview h5,
+.md-preview h6,
+.md-preview strong,
+.md-preview b,
+.md-preview th,
+.md-preview label {
+  color: var(--ink);
+}
+
+/* The theme colours headings with `h2:not(#headtext)`, which carries ID-level
+   specificity, so h2 needs an ID in its selector to be re-inked. */
+#root .md-preview h2 {
+  color: var(--ink);
+}
+
+.md-preview h1,
+.md-preview h2 {
+  border-bottom-color: var(--paper-rule);
+}
+
+.md-preview p,
+.md-preview li,
+.md-preview td,
+.md-preview blockquote {
+  color: var(--ink);
+}
+
+.md-preview a {
+  color: #0b66c3;
+  border-bottom: solid 1px rgba(11, 102, 195, 0.35);
+}
+
+.md-preview a:hover {
+  color: #084f97;
+  border-bottom-color: #084f97;
+}
+
+.md-preview blockquote {
+  border-left-color: #d8d4ca;
+  color: var(--ink-soft);
+}
+
+.md-preview :not(pre) > code {
+  background-color: #efece5;
+  border-color: #e0dcd2;
+  color: #b4234a;
+}
+
+.md-preview hr {
+  border-bottom-color: var(--paper-rule);
+}
+
+.md-preview table thead {
+  border-bottom-color: #d8d4ca;
+}
+
+.md-preview table tbody tr {
+  border-color: var(--paper-rule);
+}
+
+.md-preview table tbody tr:nth-child(2n + 1) {
+  background-color: #f3f1ec;
+}
+
+/* Code blocks stay dark (atom-one-dark) for contrast on the paper. */
+.md-preview pre code.hljs {
+  border: 0;
+}
+
 @media screen and (max-width: 736px) {
   .notepad-main {
     grid-template-columns: 1fr;
@@ -269,10 +381,7 @@ body.is-tool-page {
 .md-preview {
   max-width: none;
   overflow-y: auto;
-  padding: 1em 1.5em;
-  border-radius: 5px;
-  border: solid 2px rgba(255, 255, 255, 0.125);
-  background-color: rgba(0, 0, 0, 0.12);
+  padding: 1em 1.5em; /* colours: see "Paper surfaces" above */
 }
 
 .md-preview > :first-child {
@@ -376,18 +485,19 @@ body.is-tool-page {
 }
 
 .wb-stage {
-  display: flex;
+  position: relative;
   flex: 1;
-  align-items: center;
-  justify-content: center;
   min-height: 0;
   overflow: hidden;
 }
 
-/* Width/height are set in JS to the largest 16:10 box that fits the stage. */
+/* Fills the stage; the backing store is resized in JS to match. */
 .wb-canvas {
+  position: absolute;
+  inset: 0;
   display: block;
-  flex: none;
+  width: 100%;
+  height: 100%;
   border-radius: 6px;
   background-color: #fbfaf7;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);

@@ -2,10 +2,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { download, useLocalStorage } from "../useLocalStorage.js";
 import SaveStatus from "../SaveStatus.jsx";
 
-// Drawing happens in a fixed logical space and is scaled to the canvas, so a
-// sketch looks the same on any screen and survives resizes.
+// The canvas fills the whole stage. Strokes live in logical units where the
+// board is always WIDTH wide, so a sketch keeps its proportions on any screen;
+// the visible logical height simply follows the window's shape.
 const WIDTH = 1600;
-const HEIGHT = 1000;
+const DEFAULT_HEIGHT = 1000; // used until the stage has been measured
 const BACKGROUND = "#fbfaf7";
 const COLORS = ["#1f2330", "#e5484d", "#f5a524", "#30a46c", "#0090ff", "#8e4ec6"];
 
@@ -50,6 +51,7 @@ export default function Whiteboard({ heading }) {
   const strokesRef = useRef(strokes);
   const redoRef = useRef(redo);
   redoRef.current = redo;
+  const heightRef = useRef(DEFAULT_HEIGHT); // visible logical height
 
   const ctx = () => canvasRef.current?.getContext("2d");
 
@@ -62,26 +64,26 @@ export default function Whiteboard({ heading }) {
     c.lineCap = "round";
     c.lineJoin = "round";
     c.fillStyle = BACKGROUND;
-    c.fillRect(0, 0, WIDTH, HEIGHT);
+    c.fillRect(0, 0, WIDTH, heightRef.current);
     list.forEach((stroke) => drawStroke(c, stroke));
   }, []);
 
-  // Fit the largest 16:10 canvas into the stage, and match its backing store
-  // to the on-screen size (and device pixel ratio) so lines stay crisp.
+  // Fill the whole stage, and match the backing store to the on-screen size
+  // (and device pixel ratio) so lines stay crisp.
   useEffect(() => {
     const canvas = canvasRef.current;
     const stage = stageRef.current;
     if (!canvas || !stage) return undefined;
     const resize = () => {
-      const cssW = Math.max(1, Math.floor(Math.min(stage.clientWidth, (stage.clientHeight * WIDTH) / HEIGHT)));
-      const cssH = Math.floor((cssW * HEIGHT) / WIDTH);
-      canvas.style.width = `${cssW}px`;
-      canvas.style.height = `${cssH}px`;
+      const cssW = Math.max(1, stage.clientWidth);
+      const cssH = Math.max(1, stage.clientHeight);
+      heightRef.current = Math.round((cssH / cssW) * WIDTH);
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = Math.round(cssW * dpr);
-      if (canvas.width !== w) {
+      const h = Math.round(cssH * dpr);
+      if (canvas.width !== w || canvas.height !== h) {
         canvas.width = w;
-        canvas.height = Math.round((w * HEIGHT) / WIDTH);
+        canvas.height = h;
       }
       redraw(strokesRef.current);
     };
@@ -98,10 +100,8 @@ export default function Whiteboard({ heading }) {
 
   const toLogical = (e) => {
     const rect = canvasRef.current.getBoundingClientRect();
-    return [
-      Math.round(((e.clientX - rect.left) / rect.width) * WIDTH),
-      Math.round(((e.clientY - rect.top) / rect.height) * HEIGHT),
-    ];
+    const unit = WIDTH / rect.width; // same scale on both axes
+    return [Math.round((e.clientX - rect.left) * unit), Math.round((e.clientY - rect.top) * unit)];
   };
 
   const onPointerDown = (e) => {
@@ -147,7 +147,8 @@ export default function Whiteboard({ heading }) {
     const stroke = current.current;
     if (!stroke) return;
     current.current = null;
-    setBoard({ strokes: [...strokesRef.current, stroke] });
+    // Functional update: two strokes finished before a re-render must both land.
+    setBoard((prev) => ({ strokes: [...prev.strokes, stroke] }));
     setRedo([]);
   };
 
@@ -192,15 +193,20 @@ export default function Whiteboard({ heading }) {
   };
 
   const exportPng = () => {
-    // Render at full logical resolution regardless of screen size.
+    // Render at full logical resolution regardless of screen size. Include
+    // strokes drawn earlier in a taller window that are now out of view.
+    let height = heightRef.current;
+    for (const { s, p } of strokes) {
+      for (let i = 1; i < p.length; i += 2) height = Math.max(height, p[i] + s);
+    }
     const out = document.createElement("canvas");
     out.width = WIDTH;
-    out.height = HEIGHT;
+    out.height = Math.ceil(height);
     const c = out.getContext("2d");
     c.lineCap = "round";
     c.lineJoin = "round";
     c.fillStyle = BACKGROUND;
-    c.fillRect(0, 0, WIDTH, HEIGHT);
+    c.fillRect(0, 0, out.width, out.height);
     strokes.forEach((s) => drawStroke(c, s));
     out.toBlob((blob) => blob && download("whiteboard.png", blob));
   };
