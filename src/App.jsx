@@ -4,7 +4,6 @@ import Header from "./components/Header.jsx";
 import Menu from "./components/Menu.jsx";
 import Footer from "./components/Footer.jsx";
 import JioSaavnWidget from "./components/JioSaavnWidget.jsx";
-import ScrollChrome from "./components/ScrollChrome.jsx";
 import Home from "./pages/Home.jsx";
 import BlogIndex from "./pages/BlogIndex.jsx";
 import BlogPost from "./pages/BlogPost.jsx";
@@ -46,7 +45,6 @@ export default function App() {
         <Footer />
       </div>
 
-      <ScrollChrome />
       <Menu open={menuOpen} onClose={() => setMenuOpen(false)} />
       <JioSaavnWidget />
     </>

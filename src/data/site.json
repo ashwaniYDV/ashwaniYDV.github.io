@@ -9,25 +9,42 @@
   ],
   "skills": [
     "PostgreSQL",
-    "Java",
-    "Go",
-    "TypeScript",
-    "Spring Boot",
-    "Kafka",
-    "Spark",
-    "ClickHouse",
-    "Elasticsearch",
-    "gRPC",
-    "Kubernetes",
-    "AWS",
-    "React"
+    "Aurora",
+    "C",
+    "Query Planning & Optimization",
+    "MVCC & Transactions",
+    "WAL & Crash Recovery",
+    "Storage Engines",
+    "Buffer Management",
+    "B-Tree & LSM Indexes",
+    "Replication",
+    "DuckDB",
+    "ClickHouse"
   ],
   "menuLinks": [
-    { "label": "Home", "href": "/" },
-    { "label": "Intro", "href": "/#intro" },
-    { "label": "Worked", "href": "/#worked" },
-    { "label": "Alma-Matter", "href": "/#alma-matter" },
-    { "label": "Projects", "href": "/#projects" },
-    { "label": "Blog", "href": "/blog" }
+    {
+      "label": "Home",
+      "href": "/"
+    },
+    {
+      "label": "Intro",
+      "href": "/#intro"
+    },
+    {
+      "label": "Worked",
+      "href": "/#worked"
+    },
+    {
+      "label": "Alma-Matter",
+      "href": "/#alma-matter"
+    },
+    {
+      "label": "Projects",
+      "href": "/#projects"
+    },
+    {
+      "label": "Blog",
+      "href": "/blog"
+    }
   ]
 }

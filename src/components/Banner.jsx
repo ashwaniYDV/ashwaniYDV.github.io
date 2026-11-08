@@ -43,10 +43,6 @@ export default function Banner() {
           </a>
           <span id="intro"></span>
         </p>
-
-        <a href="#one" className="scroll-cue" aria-label="Scroll to About me">
-          <i className="fa fa-angle-down" aria-hidden="true"></i>
-        </a>
       </div>
 
     </section>
