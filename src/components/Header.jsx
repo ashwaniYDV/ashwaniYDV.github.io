@@ -30,8 +30,11 @@ export default function Header({ hasBanner, onMenuToggle }) {
         <Link to="/">Ashwani Yadav</Link>
       </h1>
       <nav>
-        <Link className="button" to="/blog">
+        <Link className="button header-extra" to="/blog">
           <i className="fa fa-pencil" aria-hidden="true"></i>&nbsp;Blog
+        </Link>
+        <Link className="button header-extra" to="/utils">
+          <i className="fa fa-wrench" aria-hidden="true"></i>&nbsp;Utils
         </Link>
         <a className="button" href="https://www.linkedin.com/in/ashwaniydv/" target="_blank" rel="noreferrer">
           <i className="fa fa-linkedin" aria-hidden="true"></i>&nbsp;LinkedIn

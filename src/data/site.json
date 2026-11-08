@@ -45,6 +45,10 @@
     {
       "label": "Blog",
       "href": "/blog"
+    },
+    {
+      "label": "Utils",
+      "href": "/utils"
     }
   ]
 }

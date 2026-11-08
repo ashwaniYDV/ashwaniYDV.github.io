@@ -46,6 +46,22 @@ draft: true   # optional: only visible in `npm run dev`
 - `npm run build` pre-renders every page to static HTML (`scripts/prerender.mjs`) with its own title and Open Graph tags, and writes `dist/404.html` and `dist/rss.xml`.
 - Post images go in `public/blog/` and are referenced as `/blog/<file>`.
 
+## Utils
+
+`/utils` hosts small in-browser tools (Notepad, Markdown editor, Whiteboard). Data stays in the
+visitor's browser via `localStorage`; nothing is sent to a server.
+
+To add a utility:
+
+1. Create `src/utils/<slug>/<Name>.jsx` with a default-exported component.
+2. Persist state with `useLocalStorage("<slug>", initialValue)` from `src/utils/useLocalStorage.js`
+   (debounced writes, cross-tab sync, returns a save `status` for `<SaveStatus />`).
+3. Add an entry to `src/utils/registry.js` (`slug`, `title`, Font Awesome 4.7 `icon`, `summary`,
+   and `Component: lazy(() => import(...))`).
+
+Routing, the index card, page title and the pre-rendered page all come from the registry, and each
+tool's code is lazy-loaded so it never slows down the rest of the site.
+
 ## Deploy
 
 Every push to `master` builds and deploys via `.github/workflows/deploy.yml`.

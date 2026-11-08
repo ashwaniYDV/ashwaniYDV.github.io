@@ -8,6 +8,8 @@ import Home from "./pages/Home.jsx";
 import BlogIndex from "./pages/BlogIndex.jsx";
 import BlogPost from "./pages/BlogPost.jsx";
 import NotFound from "./pages/NotFound.jsx";
+import UtilsIndex from "./pages/UtilsIndex.jsx";
+import UtilPage from "./pages/UtilPage.jsx";
 import { useBodyClass, useRevealOnScroll } from "./hooks.js";
 
 export default function App() {
@@ -39,6 +41,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/blog" element={<BlogIndex />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/utils" element={<UtilsIndex />} />
+          <Route path="/utils/:slug" element={<UtilPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />

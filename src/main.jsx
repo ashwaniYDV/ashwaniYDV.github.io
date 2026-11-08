@@ -7,6 +7,7 @@ import "./assets/css/standards-mode.css";
 import "highlight.js/styles/atom-one-dark.css";
 import "./assets/css/blog.css";
 import "./assets/css/enhancements.css";
+import "./assets/css/utils.css";
 import App from "./App.jsx";
 
 // Pages are pre-rendered at build time (scripts/prerender.mjs) for link
