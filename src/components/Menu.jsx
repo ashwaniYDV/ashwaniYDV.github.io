@@ -1,16 +1,18 @@
+import { useNavigate } from "react-router";
 import { menuLinks } from "../data";
 
 // Matches the 350ms close transition from the Solid State theme.
 const CLOSE_DELAY_MS = 350;
 
 export default function Menu({ open, onClose }) {
+  const navigate = useNavigate();
+
+  // Let the menu fade out, then navigate in-app (no page reload).
   const go = (e, href) => {
     e.preventDefault();
     e.stopPropagation();
     onClose();
-    window.setTimeout(() => {
-      window.location.href = href;
-    }, CLOSE_DELAY_MS);
+    window.setTimeout(() => navigate(href), CLOSE_DELAY_MS);
   };
 
   return (

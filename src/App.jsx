@@ -11,7 +11,7 @@ import NotFound from "./pages/NotFound.jsx";
 import { useBodyClass, usePointerSparkles } from "./hooks.js";
 
 export default function App() {
-  const { pathname, hash } = useLocation();
+  const { pathname, hash, key } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   useBodyClass("is-menu-visible", menuOpen);
   usePointerSparkles();
@@ -22,10 +22,14 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Client-side navigation keeps the old scroll position; start new pages at the top.
+  // Client-side navigation doesn't scroll by itself: jump to the #section if
+  // there is one, otherwise to the top. `key` changes on every navigation, so
+  // clicking "Home" while already home still scrolls up.
   useEffect(() => {
-    if (!hash) window.scrollTo(0, 0);
-  }, [pathname, hash]);
+    const target = hash && document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (target) target.scrollIntoView();
+    else window.scrollTo(0, 0);
+  }, [pathname, hash, key]);
 
   return (
     <>

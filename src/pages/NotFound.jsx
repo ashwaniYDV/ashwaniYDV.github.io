@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import PageShell from "./PageShell.jsx";
 import { usePageTitle } from "../hooks.js";
 
@@ -8,14 +9,14 @@ export default function NotFound() {
     <PageShell title="Page not found" subtitle="That page doesn't exist, or it moved">
       <ul className="actions">
         <li>
-          <a href="/" className="button">
+          <Link to="/" className="button">
             Home
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="/blog" className="button">
+          <Link to="/blog" className="button">
             Blog
-          </a>
+          </Link>
         </li>
       </ul>
     </PageShell>

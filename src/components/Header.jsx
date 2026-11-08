@@ -27,7 +27,7 @@ export default function Header({ hasBanner, onMenuToggle }) {
   return (
     <header id="header" ref={ref} className={alt ? "alt" : undefined}>
       <h1>
-        <a href="/">Ashwani Yadav</a>
+        <Link to="/">Ashwani Yadav</Link>
       </h1>
       <nav>
         <Link className="button" to="/blog">
