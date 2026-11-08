@@ -805,7 +805,7 @@ body.is-tool-fixed {
   cursor: cell;
 }
 
-/* ---------- Header buttons on small screens: keep it to LinkedIn + menu ---------- */
+/* ---------- Header buttons on small screens: keep it to the menu button ---------- */
 @media screen and (max-width: 736px) {
   #header nav .header-extra {
     display: none;

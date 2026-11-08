@@ -36,9 +36,6 @@ export default function Header({ hasBanner, onMenuToggle }) {
         <Link className="button header-extra" to="/utils">
           <i className="fa fa-wrench" aria-hidden="true"></i>&nbsp;Utils
         </Link>
-        <a className="button" href="https://www.linkedin.com/in/ashwaniydv/" target="_blank" rel="noreferrer">
-          <i className="fa fa-linkedin" aria-hidden="true"></i>&nbsp;LinkedIn
-        </a>
         <a
           className="button"
           href="#menu"
