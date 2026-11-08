@@ -233,6 +233,74 @@
   transition-delay: 0.12s;
 }
 
+/* ---------- Compact inner pages (blog, utils, 404) ----------
+ * The theme's generic page band is ~11em of padding plus a 6.5em angled
+ * divider before content. Trim it: clear the fixed navbar, keep a slim
+ * title band, and use a shallower divider. IDs in the selectors outrank
+ * the theme's `#wrapper > header` rules at every breakpoint.
+ */
+#wrapper.page-compact > header {
+  padding: 6em 0 1em 0;
+}
+
+#wrapper.page-compact > header h2 {
+  font-size: 1.75em;
+  margin-bottom: 0.5em;
+  padding-bottom: 0.35em;
+}
+
+#wrapper.page-compact > header p {
+  margin: 0;
+  font-size: 0.9em;
+}
+
+#wrapper.page-compact > .wrapper {
+  margin-top: 2.5em;
+}
+
+#wrapper.page-compact > .wrapper::before {
+  top: -2.5em;
+  height: 2.5em;
+}
+
+#wrapper.page-compact > .wrapper > .inner {
+  padding-top: 0.75em;
+}
+
+@media screen and (max-width: 1280px) {
+  #wrapper.page-compact > header {
+    padding: 5.5em 0 3em 0;
+    margin-bottom: -2.5em;
+  }
+}
+
+@media screen and (max-width: 980px) {
+  #wrapper.page-compact > header {
+    padding: 5.5em 3em 3em 3em;
+    margin-bottom: -2.5em;
+  }
+}
+
+@media screen and (max-width: 736px) {
+  #wrapper.page-compact > header {
+    padding: 4.25em 1.5em 2.25em 1.5em;
+    margin-bottom: -1.75em;
+  }
+
+  #wrapper.page-compact > header h2 {
+    font-size: 1.25em;
+  }
+
+  #wrapper.page-compact > .wrapper {
+    margin-top: 1.75em;
+  }
+
+  #wrapper.page-compact > .wrapper::before {
+    top: -1.75em;
+    height: 1.75em;
+  }
+}
+
 /* ---------- Respect reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   .avatar-ring::before,
