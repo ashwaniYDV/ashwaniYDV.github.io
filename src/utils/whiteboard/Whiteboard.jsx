@@ -36,7 +36,7 @@ function drawStroke(ctx, { c, s, p }) {
   ctx.stroke();
 }
 
-export default function Whiteboard() {
+export default function Whiteboard({ heading }) {
   const [board, setBoard, status] = useLocalStorage("whiteboard", { strokes: [] }, { debounceMs: 600 });
   const strokes = board.strokes;
   const [redo, setRedo] = useState([]);
@@ -45,6 +45,7 @@ export default function Whiteboard() {
   const [size, setSize] = useState(4);
 
   const canvasRef = useRef(null);
+  const stageRef = useRef(null);
   const current = useRef(null); // stroke being drawn (not yet committed)
   const strokesRef = useRef(strokes);
   const redoRef = useRef(redo);
@@ -65,13 +66,19 @@ export default function Whiteboard() {
     list.forEach((stroke) => drawStroke(c, stroke));
   }, []);
 
-  // Match the canvas backing store to its on-screen size (and device pixel ratio).
+  // Fit the largest 16:10 canvas into the stage, and match its backing store
+  // to the on-screen size (and device pixel ratio) so lines stay crisp.
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return undefined;
+    const stage = stageRef.current;
+    if (!canvas || !stage) return undefined;
     const resize = () => {
+      const cssW = Math.max(1, Math.floor(Math.min(stage.clientWidth, (stage.clientHeight * WIDTH) / HEIGHT)));
+      const cssH = Math.floor((cssW * HEIGHT) / WIDTH);
+      canvas.style.width = `${cssW}px`;
+      canvas.style.height = `${cssH}px`;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const w = Math.round(canvas.clientWidth * dpr);
+      const w = Math.round(cssW * dpr);
       if (canvas.width !== w) {
         canvas.width = w;
         canvas.height = Math.round((w * HEIGHT) / WIDTH);
@@ -79,7 +86,7 @@ export default function Whiteboard() {
       redraw(strokesRef.current);
     };
     const observer = new ResizeObserver(resize);
-    observer.observe(canvas);
+    observer.observe(stage);
     resize();
     return () => observer.disconnect();
   }, [redraw]);
@@ -201,6 +208,7 @@ export default function Whiteboard() {
   return (
     <div className="whiteboard">
       <div className="util-toolbar" role="toolbar" aria-label="Whiteboard tools">
+        {heading}
         <div className="util-segmented" role="group" aria-label="Tool">
           <button
             type="button"
@@ -273,7 +281,8 @@ export default function Whiteboard() {
         </button>
       </div>
 
-      <canvas
+      <div className="wb-stage" ref={stageRef}>
+        <canvas
         ref={canvasRef}
         className={tool === "eraser" ? "wb-canvas is-erasing" : "wb-canvas"}
         aria-label="Whiteboard drawing area"
@@ -282,7 +291,8 @@ export default function Whiteboard() {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
-      />
+        />
+      </div>
 
       <div className="util-statusbar">
         <span>

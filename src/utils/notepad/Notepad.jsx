@@ -23,7 +23,7 @@ const relativeTime = (ts) => {
   return new Date(ts).toLocaleDateString();
 };
 
-export default function Notepad() {
+export default function Notepad({ heading }) {
   const [state, setState, status] = useLocalStorage("notepad", () => {
     const first = makeNote(WELCOME);
     return { notes: [first], activeId: first.id };
@@ -56,54 +56,60 @@ export default function Notepad() {
 
   return (
     <div className="notepad">
-      <aside className="notepad-list" aria-label="Notes">
-        <button type="button" className="button small primary notepad-new" onClick={addNote}>
+      <div className="util-toolbar" role="toolbar" aria-label="Notepad">
+        {heading}
+        <span className="util-toolbar-spacer" />
+        <button type="button" className="button small" onClick={addNote}>
           <i className="fa fa-plus" aria-hidden="true"></i>&nbsp;New note
         </button>
-        <ul>
-          {sorted.map((note) => (
-            <li key={note.id}>
-              <button
-                type="button"
-                className={note.id === active.id ? "notepad-item is-active" : "notepad-item"}
-                aria-current={note.id === active.id ? "true" : undefined}
-                onClick={() => setState({ notes, activeId: note.id })}
-              >
-                <span className="notepad-item-title">{titleOf(note.text)}</span>
-                <span className="notepad-item-time">{relativeTime(note.updatedAt)}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </aside>
+        <button type="button" className="button small" onClick={() => download(`${titleOf(text)}.txt`, text)}>
+          <i className="fa fa-download" aria-hidden="true"></i>&nbsp;.txt
+        </button>
+        <button type="button" className="button small" onClick={deleteNote}>
+          <i className="fa fa-trash-o" aria-hidden="true"></i>&nbsp;Delete
+        </button>
+      </div>
 
-      <section className="notepad-editor">
-        <label htmlFor="notepad-text" className="visually-hidden">
-          Note text
-        </label>
-        <textarea
-          id="notepad-text"
-          value={text}
-          onChange={(e) => update(e.target.value)}
-          placeholder="Start typing…"
-          spellCheck
-          autoFocus
-        />
-        <div className="util-statusbar">
-          <span>
-            {words} words · {text.length} characters
-          </span>
-          <SaveStatus status={status} />
-          <span className="util-statusbar-actions">
-            <button type="button" className="button small" onClick={() => download(`${titleOf(text)}.txt`, text)}>
-              <i className="fa fa-download" aria-hidden="true"></i>&nbsp;.txt
-            </button>
-            <button type="button" className="button small" onClick={deleteNote}>
-              <i className="fa fa-trash-o" aria-hidden="true"></i>&nbsp;Delete
-            </button>
-          </span>
-        </div>
-      </section>
+      <div className="notepad-main">
+        <aside className="notepad-list" aria-label="Notes">
+          <ul>
+            {sorted.map((note) => (
+              <li key={note.id}>
+                <button
+                  type="button"
+                  className={note.id === active.id ? "notepad-item is-active" : "notepad-item"}
+                  aria-current={note.id === active.id ? "true" : undefined}
+                  onClick={() => setState({ notes, activeId: note.id })}
+                >
+                  <span className="notepad-item-title">{titleOf(note.text)}</span>
+                  <span className="notepad-item-time">{relativeTime(note.updatedAt)}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </aside>
+
+        <section className="notepad-editor">
+          <label htmlFor="notepad-text" className="visually-hidden">
+            Note text
+          </label>
+          <textarea
+            id="notepad-text"
+            value={text}
+            onChange={(e) => update(e.target.value)}
+            placeholder="Start typing…"
+            spellCheck
+            autoFocus
+          />
+        </section>
+      </div>
+
+      <div className="util-statusbar">
+        <span>
+          {notes.length} {notes.length === 1 ? "note" : "notes"} · {words} words · {text.length} characters
+        </span>
+        <SaveStatus status={status} />
+      </div>
     </div>
   );
 }

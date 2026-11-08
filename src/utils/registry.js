@@ -5,6 +5,9 @@ import { lazy } from "react";
  *
  * To add a new one:
  *   1. Create src/utils/<slug>/<Name>.jsx with a default-exported component.
+ *      It receives a `heading` prop (back link + title): render it first in its
+ *      `.util-toolbar`. The page is full-screen, so make the root fill the height
+ *      (see `.tool-page` in assets/css/utils.css).
  *      Persist its state with useLocalStorage("<slug>", initial) from ../useLocalStorage.js.
  *   2. Add an entry below. `icon` is any Font Awesome 4.7 class (https://fontawesome.com/v4/icons/).
  *

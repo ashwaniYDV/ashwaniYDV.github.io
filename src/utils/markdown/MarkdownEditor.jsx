@@ -84,7 +84,7 @@ const VIEWS = [
   { id: "preview", label: "Preview", icon: "fa-eye" },
 ];
 
-export default function MarkdownEditor() {
+export default function MarkdownEditor({ heading }) {
   const [doc, setDoc, status] = useLocalStorage("markdown:doc", SAMPLE, { debounceMs: 400 });
   const [view, setView] = useLocalStorage("markdown:view", "split");
   const [copied, setCopied] = useState(false);
@@ -109,6 +109,7 @@ export default function MarkdownEditor() {
   return (
     <div className={`md-editor view-${view}`}>
       <div className="util-toolbar" role="toolbar" aria-label="Markdown editor">
+        {heading}
         <div className="util-segmented" role="group" aria-label="View">
           {VIEWS.map((v) => (
             <button

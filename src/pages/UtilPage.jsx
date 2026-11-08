@@ -27,6 +27,24 @@ class UtilErrorBoundary extends Component {
   }
 }
 
+/** "← Utils / Tool name": rendered by each tool at the start of its own toolbar. */
+function ToolHeading({ util }) {
+  return (
+    <div className="tool-heading">
+      <Link to="/utils" className="tool-back">
+        <i className="fa fa-angle-left" aria-hidden="true"></i>&nbsp;Utils
+      </Link>
+      <h1 className="tool-title">
+        <i className={`fa ${util.icon}`} aria-hidden="true"></i>&nbsp;{util.title}
+      </h1>
+    </div>
+  );
+}
+
+/**
+ * Full-screen tool layout: just the site navbar on top, then the tool fills
+ * the rest of the viewport (App hides the footer and floating widgets here).
+ */
 export default function UtilPage() {
   const { slug } = useParams();
   const util = getUtil(slug);
@@ -34,31 +52,22 @@ export default function UtilPage() {
 
   if (!util) return <NotFound />;
   const { Component: Tool } = util;
+  const heading = <ToolHeading util={util} />;
 
   return (
-    <section id="wrapper" className="util-page">
-      <header>
-        <div className="inner">
-          <h2>
-            <i className={`fa ${util.icon}`} aria-hidden="true"></i>&nbsp;&nbsp;{util.title}
-          </h2>
-          <p>{util.summary}</p>
-        </div>
-      </header>
-      <div className="wrapper">
-        <div className="inner">
-          <nav className="util-breadcrumb" aria-label="Breadcrumb">
-            <Link to="/utils">
-              <i className="fa fa-angle-left" aria-hidden="true"></i>&nbsp;All utils
-            </Link>
-          </nav>
-          <UtilErrorBoundary key={slug}>
-            <Suspense fallback={<p className="util-message">Loading {util.title}…</p>}>
-              <Tool />
-            </Suspense>
-          </UtilErrorBoundary>
-        </div>
-      </div>
-    </section>
+    <main className="tool-page">
+      <UtilErrorBoundary key={slug}>
+        <Suspense
+          fallback={
+            <div className="util-toolbar">
+              {heading}
+              <span className="util-message">Loading…</span>
+            </div>
+          }
+        >
+          <Tool heading={heading} />
+        </Suspense>
+      </UtilErrorBoundary>
+    </main>
   );
 }
