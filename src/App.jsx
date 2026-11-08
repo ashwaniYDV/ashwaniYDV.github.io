@@ -8,13 +8,12 @@ import Home from "./pages/Home.jsx";
 import BlogIndex from "./pages/BlogIndex.jsx";
 import BlogPost from "./pages/BlogPost.jsx";
 import NotFound from "./pages/NotFound.jsx";
-import { useBodyClass, usePointerSparkles, useRevealOnScroll } from "./hooks.js";
+import { useBodyClass, useRevealOnScroll } from "./hooks.js";
 
 export default function App() {
   const { pathname, hash, key } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   useBodyClass("is-menu-visible", menuOpen);
-  usePointerSparkles();
   useRevealOnScroll(pathname);
 
   useEffect(() => {

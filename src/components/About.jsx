@@ -1,14 +1,11 @@
 import { img, skills } from "../data";
-import { useTilt } from "../hooks.js";
 
 export default function About() {
-  const tiltRef = useTilt();
-
   return (
     <section id="one" className="wrapper spotlight style1">
       <div className="inner">
         <a className="image">
-          <img ref={tiltRef} src={img("octocat.png")} alt="GitHub Octocat" />
+          <img src={img("octocat.png")} alt="GitHub Octocat" />
         </a>
         <div className="content">
           <h2 className="major myfont">About Me!</h2>

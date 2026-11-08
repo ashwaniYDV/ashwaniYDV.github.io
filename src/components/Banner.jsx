@@ -1,10 +1,7 @@
 import { RESUME_URL, socials, taglines } from "../data";
-import { useTilt } from "../hooks.js";
 import TypeRotator from "./TypeRotator.jsx";
 
 export default function Banner() {
-  const avatarRef = useTilt();
-
   return (
     <section id="banner">
       <div className="inner">
@@ -13,10 +10,8 @@ export default function Banner() {
           <div className="avatar-ring">
             <div
               id="homeimg"
-              ref={avatarRef}
               role="img"
               aria-label="Ashwani Yadav"
-              style={{ position: "relative" }}
             />
           </div>
         </div>

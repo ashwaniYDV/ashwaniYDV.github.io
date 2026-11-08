@@ -216,15 +216,6 @@
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35), inset 0 2px 0 0 var(--accent-2);
 }
 
-.spotlight .image img {
-  transition: transform 0.35s ease, filter 0.35s ease;
-}
-
-.spotlight .image:hover img {
-  transform: scale(1.05);
-  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.35));
-}
-
 /* ---------- Reveal on scroll (hidden only once JS opts in) ---------- */
 .js-reveal .reveal {
   opacity: 0;
@@ -253,7 +244,6 @@
 
   .features article,
   .features article:hover,
-  .spotlight .image img,
   .skill-chips li,
   #banner .faw-up {
     transition: none !important;
