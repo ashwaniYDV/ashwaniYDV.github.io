@@ -12,7 +12,7 @@ export default function About() {
         </a>
         <div className="content">
           <h2 className="major myfont">About Me!</h2>
-          <h3 className="major myfont">Presently: SDE-2 at Amazon</h3>
+          <h3 className="major myfont">Presently: SDE-2 at AWS (Aurora PostgreSQL)</h3>
           <p className="myfont">
             Student Developer at Google Summer of Code with RocketChat
             <br />
