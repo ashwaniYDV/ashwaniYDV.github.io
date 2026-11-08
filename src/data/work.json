@@ -3,7 +3,7 @@
     "variant": "dark",
     "title": "AWS - SDE2",
     "url": "https://aws.amazon.com/rds/aurora/",
-    "image": "amzn1.gif",
+    "image": "aws.gif",
     "imageStyle": {
       "borderRadius": "20%",
       "width": "70%"
