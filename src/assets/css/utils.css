@@ -14,12 +14,12 @@ body.is-tool-fixed {
   box-sizing: border-box;
   height: 100vh;
   height: 100dvh;
-  padding: 0.45em 1.25em 0.5em;
+  padding: 0 1.25em 0.5em;
 }
 
 @media screen and (max-width: 736px) {
   .tool-page {
-    padding: 0.5em 0.75em 0.4em;
+    padding: 0 0.75em 0.4em;
   }
 }
 
@@ -47,7 +47,7 @@ body.is-tool-fixed {
   top: 0;
   z-index: 5;
   margin: 0 -1.25em 0.6em;
-  padding: 0.4em 1.25em;
+  padding: 0 1.25em;
   background-color: rgba(46, 49, 65, 0.85);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
@@ -57,7 +57,7 @@ body.is-tool-fixed {
 @media screen and (max-width: 736px) {
   .tool-page.is-scrollable .util-toolbar {
     margin: 0 -0.75em 0.5em;
-    padding: 0.35em 0.75em;
+    padding: 0 0.75em;
   }
 }
 
@@ -123,6 +123,8 @@ body.is-tool-fixed {
   align-items: center;
   gap: 0.4em;
   flex: none;
+  box-sizing: border-box;
+  min-height: var(--bar-h, 48px); /* same height as the site header */
   margin-bottom: 0.45em;
 }
 
@@ -132,8 +134,8 @@ body.is-tool-fixed {
 
 .util-toolbar .button.small,
 .util-statusbar .button.small {
-  height: 2.15em;
-  line-height: 2.15em;
+  height: var(--bar-btn-h, 32px);
+  line-height: var(--bar-btn-h, 32px);
   padding: 0 1em;
   margin: 0;
 }

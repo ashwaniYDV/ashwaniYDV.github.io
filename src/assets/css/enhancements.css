@@ -22,6 +22,41 @@
   border: 0;
 }
 
+/* ---------- Top bars: one shared height for the site header and util toolbars ---------- */
+:root {
+  --bar-h: 48px;
+  --bar-btn-h: 32px;
+}
+
+#header,
+#header nav,
+#header nav a {
+  height: var(--bar-h);
+  line-height: var(--bar-h);
+}
+
+#header nav {
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+#header nav a.button,
+#header nav a[href="#menu"] {
+  height: var(--bar-btn-h);
+  line-height: var(--bar-btn-h);
+  margin: 0;
+}
+
+/* On phones the menu link is a full-height tap target (theme default). */
+@media screen and (max-width: 736px) {
+  #header nav a[href="#menu"] {
+    height: var(--bar-h);
+    line-height: var(--bar-h);
+  }
+}
+
 /* ---------- Header: frosted glass once it turns solid ---------- */
 #header:not(.alt) {
   background-color: rgba(46, 49, 65, 0.78);
