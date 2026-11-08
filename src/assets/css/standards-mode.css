@@ -8,8 +8,21 @@
   min-height: 90vh !important;
 }
 
-/* Quirks mode let .faw-up's 30px win over Font Awesome's `.fa { font: 14px/1 }`. */
+/*
+ * Social icon circles: centre the glyph with flexbox instead of relying on
+ * padding + line-height (which left icons sitting low), and drop the theme's
+ * dotted link underline that showed along the bottom of each circle.
+ */
 #banner .faw-up {
-  font-size: 30px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  font-size: 26px !important;
   line-height: 1;
+  vertical-align: middle;
+  border-bottom: 0;
 }
