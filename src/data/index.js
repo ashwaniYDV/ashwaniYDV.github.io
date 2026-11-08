@@ -16,4 +16,6 @@ export const img = (name) => images[`../assets/images/${name}`];
 export const RESUME_URL = site.resumeUrl;
 export const FORMSPREE_URL = site.formspreeUrl;
 export const menuLinks = site.menuLinks;
+export const taglines = site.taglines ?? [];
+export const skills = site.skills ?? [];
 export { socials, work, education, projects };

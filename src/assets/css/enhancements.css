@@ -1,0 +1,346 @@
+/*
+ * Visual polish layered on top of Solid State. Every animation here is
+ * switched off under prefers-reduced-motion (bottom of file).
+ */
+
+:root {
+  --accent-1: #b9a7ff; /* lavender */
+  --accent-2: #ff8fb1; /* pink */
+  --accent-3: #ffc46b; /* amber */
+  --accent-gradient: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3));
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Header: frosted glass once it turns solid ---------- */
+#header:not(.alt) {
+  background-color: rgba(46, 49, 65, 0.78);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  backdrop-filter: blur(10px) saturate(140%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06), 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+/* ---------- Scroll progress + back to top ---------- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 10001; /* above the theme's header (10000) */
+  pointer-events: none;
+}
+
+.scroll-progress-bar {
+  height: 100%;
+  background: var(--accent-gradient);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  box-shadow: 0 0 10px rgba(255, 143, 177, 0.6);
+}
+
+.back-to-top {
+  position: fixed;
+  left: 1.25em;
+  bottom: 1.25em;
+  z-index: 9999;
+  width: 2.75em;
+  height: 2.75em;
+  padding: 0;
+  line-height: 1;
+  border-radius: 50%;
+  border: solid 1px rgba(255, 255, 255, 0.25);
+  background-color: rgba(46, 49, 65, 0.85);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 1em;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s, border-color 0.2s ease;
+}
+
+.back-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s, border-color 0.2s ease;
+}
+
+.back-to-top:hover,
+.back-to-top:focus-visible {
+  border-color: var(--accent-2);
+}
+
+/* ---------- Hero ---------- */
+.avatar-ring {
+  position: relative;
+  padding: 6px;
+  border-radius: 50%;
+  isolation: isolate;
+}
+
+.avatar-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
+  filter: drop-shadow(0 0 18px rgba(185, 167, 255, 0.45));
+  animation: ring-spin 8s linear infinite;
+}
+
+@keyframes ring-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+#headtext b {
+  background: linear-gradient(90deg, #fff 0%, #fff 35%, var(--accent-1) 60%, var(--accent-2) 80%, #fff 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 7s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    background-position: 100% 0;
+  }
+  50% {
+    background-position: 0 0;
+  }
+}
+
+.hero-tagline {
+  text-align: center;
+  font-size: 1.15em;
+  letter-spacing: 0.04em;
+  min-height: 1.6em; /* no layout jump while text is typed/deleted */
+  margin-bottom: 0.75em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.type-caret {
+  margin-left: 2px;
+  color: var(--accent-2);
+  font-weight: 700;
+}
+
+.type-caret.is-blinking {
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.scroll-cue {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5em;
+  height: 2.5em;
+  margin: 1.75em auto 0;
+  border-radius: 50%;
+  border: solid 1px rgba(255, 255, 255, 0.35) !important;
+  color: #fff !important;
+  font-size: 1.1em;
+  animation: cue-bounce 2.2s ease-in-out infinite;
+}
+
+.scroll-cue:hover {
+  border-color: var(--accent-2) !important;
+}
+
+@keyframes cue-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+/* ---------- Social icons: lift + accent glow on hover ---------- */
+#banner .faw-up {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+}
+
+#banner .faw-up:hover,
+#banner .faw-up:focus-visible {
+  opacity: 1;
+  transform: translateY(-4px);
+  background-color: #5a4f78;
+  box-shadow: 0 0 22px rgba(255, 143, 177, 0.55);
+}
+
+/* ---------- Section titles ---------- */
+.section-title {
+  /* Shrink to the text so the gradient spans the word, not the viewport. */
+  display: table;
+  margin: 0 auto;
+  font-size: 3em;
+  text-align: center;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+}
+
+.section-title::after {
+  content: "";
+  display: block;
+  width: 3.5em;
+  height: 3px;
+  margin: 0.35em auto 0;
+  border-radius: 3px;
+  background: var(--accent-gradient);
+  font-size: 0.4em; /* keep the bar width modest relative to the 3em title */
+}
+
+/* ---------- Skill chips ---------- */
+.skill-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end; /* About content is right-aligned */
+  gap: 0.5em;
+  list-style: none;
+  padding: 0;
+  margin: 1.25em 0 0;
+}
+
+.skill-chips li {
+  padding: 0.25em 0.85em;
+  border-radius: 999px;
+  border: solid 1px rgba(255, 255, 255, 0.22);
+  background-color: rgba(255, 255, 255, 0.06);
+  font-size: 0.8em;
+  letter-spacing: 0.04em;
+  line-height: 1.8;
+  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+.skill-chips li:hover {
+  border-color: var(--accent-2);
+  background-color: rgba(255, 143, 177, 0.12);
+  transform: translateY(-2px);
+}
+
+@media screen and (max-width: 736px) {
+  .skill-chips {
+    justify-content: center;
+  }
+}
+
+/* ---------- "Now" badge on the current job ---------- */
+.now-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  margin-left: 0.75em;
+  padding: 0.15em 0.7em;
+  border-radius: 999px;
+  border: solid 1px rgba(118, 255, 166, 0.5);
+  background-color: rgba(118, 255, 166, 0.1);
+  color: #b6ffd0;
+  font-size: 0.55em;
+  letter-spacing: 0.12em;
+  vertical-align: middle;
+}
+
+.now-dot {
+  width: 0.6em;
+  height: 0.6em;
+  border-radius: 50%;
+  background-color: #76ffa6;
+  box-shadow: 0 0 0 0 rgba(118, 255, 166, 0.7);
+  animation: now-pulse 1.8s ease-out infinite;
+}
+
+@keyframes now-pulse {
+  70% {
+    box-shadow: 0 0 0 0.6em rgba(118, 255, 166, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(118, 255, 166, 0);
+  }
+}
+
+/* ---------- Cards and logos ---------- */
+.features article {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.features article:hover {
+  transform: translateY(-6px);
+  background-color: #3b3e52;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35), inset 0 2px 0 0 var(--accent-2);
+}
+
+.spotlight .image img {
+  transition: transform 0.35s ease, filter 0.35s ease;
+}
+
+.spotlight .image:hover img {
+  transform: scale(1.05);
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.35));
+}
+
+/* ---------- Reveal on scroll (hidden only once JS opts in) ---------- */
+.js-reveal .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.js-reveal .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Stagger cards in a grid. */
+.js-reveal .features .reveal:nth-child(2n) {
+  transition-delay: 0.12s;
+}
+
+/* ---------- Respect reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .avatar-ring::before,
+  #headtext b,
+  .type-caret.is-blinking,
+  .scroll-cue,
+  .now-dot {
+    animation: none !important;
+  }
+
+  .features article,
+  .features article:hover,
+  .spotlight .image img,
+  .skill-chips li,
+  #banner .faw-up,
+  .back-to-top {
+    transition: none !important;
+    transform: none !important;
+  }
+}

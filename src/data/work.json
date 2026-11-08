@@ -12,7 +12,8 @@
       "Joined 'Aurora PostgreSQL (Engine)' Team.",
       "Aug 2026 – Present"
     ],
-    "description": "Working on the Amazon Aurora PostgreSQL database engine."
+    "description": "Working on the Amazon Aurora PostgreSQL database engine.",
+    "current": true
   },
   {
     "variant": "light",

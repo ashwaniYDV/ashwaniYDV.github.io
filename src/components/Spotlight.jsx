@@ -19,6 +19,7 @@ export default function Spotlight({
   description,
   links = [],
   linkClassName = "special",
+  current = false,
   anchor,
 }) {
   const imageClass = flatImage || imageStyle ? "image zeroradius" : "image";
@@ -26,13 +27,19 @@ export default function Spotlight({
 
   return (
     <section className={`wrapper spotlight ${VARIANT_CLASSES[variant] ?? VARIANT_CLASSES.light}`}>
-      <div className="inner">
+      <div className="inner reveal">
         <a {...external} className={imageClass}>
           <img src={img(image)} alt={title} className={flatImage ? "zeroradius" : undefined} style={imageStyle} />
         </a>
         <div className="content">
           <h2 className={titleClassName} style={titleStyle}>
             {title}
+            {current && (
+              <span className="now-badge">
+                <span className="now-dot" aria-hidden="true" />
+                Now
+              </span>
+            )}
           </h2>
           {lines.map((line, i) => (
             <h3 key={i} className="nomargin myfont">

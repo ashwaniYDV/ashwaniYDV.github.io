@@ -1,4 +1,4 @@
-import { img } from "../data";
+import { img, skills } from "../data";
 import { useTilt } from "../hooks.js";
 
 export default function About() {
@@ -22,6 +22,13 @@ export default function About() {
             <br />
             Developer, Open source enthusiast, code fanatic ♥
           </p>
+          {skills.length > 0 && (
+            <ul className="skill-chips" aria-label="Toolbox">
+              {skills.map((skill) => (
+                <li key={skill}>{skill}</li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
       <span id="worked"></span>

@@ -1,6 +1,27 @@
 {
   "resumeUrl": "https://drive.google.com/file/d/1kv5wctnszrn-0KLncFzsKl2DrmXp8saM/view?usp=sharing",
   "formspreeUrl": "https://formspree.io/mqkygoae",
+  "taglines": [
+    "Database engineer @ AWS Aurora PostgreSQL",
+    "Backend & distributed systems",
+    "Open-source contributor",
+    "Google Summer of Code '20"
+  ],
+  "skills": [
+    "PostgreSQL",
+    "Java",
+    "Go",
+    "TypeScript",
+    "Spring Boot",
+    "Kafka",
+    "Spark",
+    "ClickHouse",
+    "Elasticsearch",
+    "gRPC",
+    "Kubernetes",
+    "AWS",
+    "React"
+  ],
   "menuLinks": [
     { "label": "Home", "href": "/" },
     { "label": "Intro", "href": "/#intro" },

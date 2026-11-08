@@ -4,17 +4,19 @@ import Header from "./components/Header.jsx";
 import Menu from "./components/Menu.jsx";
 import Footer from "./components/Footer.jsx";
 import JioSaavnWidget from "./components/JioSaavnWidget.jsx";
+import ScrollChrome from "./components/ScrollChrome.jsx";
 import Home from "./pages/Home.jsx";
 import BlogIndex from "./pages/BlogIndex.jsx";
 import BlogPost from "./pages/BlogPost.jsx";
 import NotFound from "./pages/NotFound.jsx";
-import { useBodyClass, usePointerSparkles } from "./hooks.js";
+import { useBodyClass, usePointerSparkles, useRevealOnScroll } from "./hooks.js";
 
 export default function App() {
   const { pathname, hash, key } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   useBodyClass("is-menu-visible", menuOpen);
   usePointerSparkles();
+  useRevealOnScroll(pathname);
 
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && setMenuOpen(false);
@@ -44,6 +46,7 @@ export default function App() {
         <Footer />
       </div>
 
+      <ScrollChrome />
       <Menu open={menuOpen} onClose={() => setMenuOpen(false)} />
       <JioSaavnWidget />
     </>

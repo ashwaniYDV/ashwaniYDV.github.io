@@ -3,6 +3,7 @@ import About from "../components/About.jsx";
 import Spotlight from "../components/Spotlight.jsx";
 import Projects from "../components/Projects.jsx";
 import Etc from "../components/Etc.jsx";
+import LatestPosts from "../components/LatestPosts.jsx";
 import { education, work } from "../data";
 import { usePageTitle } from "../hooks.js";
 
@@ -10,7 +11,7 @@ function SectionTitle({ children }) {
   return (
     <>
       <br />
-      <h1 style={{ fontSize: "3em", textAlign: "center" }} className="myfont">
+      <h1 className="myfont section-title reveal">
         {children}
       </h1>
       <br />
@@ -41,6 +42,10 @@ export default function Home() {
 
         <SectionTitle>Projects</SectionTitle>
         <Projects />
+        <br />
+
+        <SectionTitle>From the blog</SectionTitle>
+        <LatestPosts />
         <br />
 
         <SectionTitle>Etc.</SectionTitle>
