@@ -124,7 +124,7 @@ body.is-tool-fixed {
   gap: 0.4em;
   flex: none;
   box-sizing: border-box;
-  min-height: var(--bar-h, 48px); /* same height as the site header */
+  min-height: var(--bar-h, 48px); /* shared util bar height */
   margin-bottom: 0.45em;
 }
 
