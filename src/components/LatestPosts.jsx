@@ -20,10 +20,6 @@ export default function LatestPosts({ limit = 2 }) {
               </h3>
               <PostMeta post={post} />
               {post.summary && <p>{post.summary}</p>}
-              {/* Duplicate of the stretched title link: keep it out of the tab order. */}
-              <Link to={`/blog/${post.slug}`} className="special" tabIndex={-1} aria-hidden="true">
-                Read post
-              </Link>
             </article>
           ))}
         </section>

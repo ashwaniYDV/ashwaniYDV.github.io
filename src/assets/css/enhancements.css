@@ -274,12 +274,6 @@
   outline-offset: 2px;
 }
 
-/* Hovering anywhere on the card lights up the "Read post" arrow. */
-.post-card:hover a.special:not(.button):before {
-  background-color: rgba(255, 255, 255, 0.075);
-  border-color: var(--accent-2);
-}
-
 /* ---------- Reveal on scroll (hidden only once JS opts in) ---------- */
 .js-reveal .reveal {
   opacity: 0;
