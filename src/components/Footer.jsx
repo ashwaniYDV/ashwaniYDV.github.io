@@ -55,7 +55,9 @@ export default function Footer() {
 
         <ul className="contact">
           <li>
-            <code>IRC: @ashwaniYDV</code>
+            <a href="mailto:ashwani.iitp@gmail.com" className="footer-email">
+              <code>Email: ashwani.iitp@gmail.com</code>
+            </a>
           </li>
           {contactOrder.map((name) => {
             const s = socials.find((x) => x.name === name);

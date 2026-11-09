@@ -382,3 +382,13 @@
     transform: none !important;
   }
 }
+
+/* ---------- Footer email chip ---------- */
+#footer .footer-email {
+  border-bottom: 0;
+}
+
+#footer .footer-email:hover code {
+  border-color: var(--accent-2);
+  color: #ffffff;
+}
