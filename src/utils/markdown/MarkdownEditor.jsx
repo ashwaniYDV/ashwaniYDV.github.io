@@ -84,8 +84,11 @@ const VIEWS = [
   { id: "preview", label: "Preview", icon: "fa-eye" },
 ];
 
-const MIN_SPLIT = 0.2;
-const MAX_SPLIT = 0.8;
+// The divider can go all the way to either edge, collapsing that pane.
+const MIN_SPLIT = 0;
+const MAX_SPLIT = 1;
+// Dragging within this distance of an edge snaps the pane fully shut.
+const SNAP = 0.06;
 
 export default function MarkdownEditor({ heading }) {
   const [doc, setDoc, status] = useLocalStorage("markdown:doc", SAMPLE, { debounceMs: 400 });
@@ -99,11 +102,18 @@ export default function MarkdownEditor({ heading }) {
   const panesRef = useRef(null);
 
   const clampSplit = (r) => Math.min(MAX_SPLIT, Math.max(MIN_SPLIT, r));
-  const ratio = clampSplit(Number(split) || 0.5);
+  // 0 is a valid (collapsed) value, so don't use `|| 0.5` here.
+  const ratio = Number.isFinite(Number(split)) ? clampSplit(Number(split)) : 0.5;
+  const sourceHidden = ratio === 0;
+  const previewHidden = ratio === 1;
 
   const splitAt = (clientX) => {
     const rect = panesRef.current?.getBoundingClientRect();
-    if (rect?.width) setSplit(Math.round(clampSplit((clientX - rect.left) / rect.width) * 1000) / 1000);
+    if (!rect?.width) return;
+    let r = clampSplit((clientX - rect.left) / rect.width);
+    if (r < SNAP) r = 0;
+    else if (r > 1 - SNAP) r = 1;
+    setSplit(Math.round(r * 1000) / 1000);
   };
 
   const onDividerPointerDown = (e) => {
@@ -217,7 +227,7 @@ export default function MarkdownEditor({ heading }) {
         className={dragging ? "md-panes is-dragging" : "md-panes"}
         style={{ "--md-left": `${ratio}fr`, "--md-right": `${1 - ratio}fr` }}
       >
-        <div className="md-pane md-input">
+        <div className={sourceHidden ? "md-pane md-input is-collapsed" : "md-pane md-input"}>
           <label htmlFor="md-text" className="visually-hidden">
             Markdown source
           </label>
@@ -249,7 +259,11 @@ export default function MarkdownEditor({ heading }) {
           onKeyDown={onDividerKeyDown}
         />
         {/* Sanitized with DOMPurify above. */}
-        <div className="md-pane md-preview post-body" aria-label="Preview" dangerouslySetInnerHTML={{ __html: html }} />
+        <div
+          className={previewHidden ? "md-pane md-preview post-body is-collapsed" : "md-pane md-preview post-body"}
+          aria-label="Preview"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
       </div>
 
       <div className="util-statusbar">

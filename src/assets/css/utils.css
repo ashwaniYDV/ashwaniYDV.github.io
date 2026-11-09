@@ -518,6 +518,24 @@ body.is-tool-fixed {
   user-select: none;
 }
 
+/* A pane dragged fully to the edge: zero width and height, not focusable.
+   It stays in the grid (not display:none) so the divider keeps its column.
+   Only side by side; the stacked narrow layout always shows both. */
+@media screen and (min-width: 981px) {
+  .md-editor.view-split .md-pane.is-collapsed {
+    visibility: hidden;
+    height: 0;
+    min-height: 0 !important;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+  }
+
+  .md-editor.view-split .md-pane.is-collapsed textarea {
+    min-height: 0 !important;
+  }
+}
+
 .md-panes.is-dragging .md-pane {
   pointer-events: none;
 }
