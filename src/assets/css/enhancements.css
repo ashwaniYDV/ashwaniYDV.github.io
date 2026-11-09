@@ -386,3 +386,46 @@
   border-color: var(--accent-2);
   color: #ffffff;
 }
+
+/* ---------- JioSaavn player: compact mobile tile on every screen size ----------
+   embed.js shows a 340px bar centred at the bottom on >=640px screens. Keep its
+   mobile geometry instead: a small tile bottom-right that opens into a panel.
+   The #jiosaavn-widget prefix out-ranks embed.js's own #jsw rules. */
+@media screen and (min-width: 640px) {
+  #jiosaavn-widget #jsw {
+    left: auto;
+    right: 8px;
+    bottom: 8px;
+    transform: none;
+    width: 120px;
+    height: 60px;
+  }
+
+  #jiosaavn-widget #jsw.complete {
+    animation: pop-in 0.3s ease-in-out forwards;
+  }
+
+  #jiosaavn-widget #jsw.expand {
+    width: 360px;
+    max-height: 85vh;
+    height: 178px;
+  }
+
+  #jiosaavn-widget #jsw.ads.expand {
+    height: 240px;
+  }
+
+  #jiosaavn-widget #jsw.queue.expand {
+    height: 396px;
+  }
+
+  #jiosaavn-widget #jsw.ads.queue.expand {
+    height: 456px;
+  }
+}
+
+/* Hidden (not removed) on full-screen tool pages, so playback carries on. */
+#jiosaavn-widget.is-hidden #jsw {
+  visibility: hidden;
+  pointer-events: none;
+}

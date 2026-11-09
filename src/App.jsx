@@ -56,7 +56,8 @@ export default function App() {
       </div>
 
       {!isToolPage && <Menu open={menuOpen} onClose={() => setMenuOpen(false)} />}
-      {!isToolPage && <JioSaavnWidget />}
+      {/* Always mounted: embed.js only builds the player once per page load. */}
+      <JioSaavnWidget hidden={isToolPage} />
     </>
   );
 }
