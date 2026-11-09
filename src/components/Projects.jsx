@@ -15,7 +15,7 @@ export default function Projects() {
         </p>
         <section className="features">
           {projects.map(({ title, description, links }) => (
-            <article key={title} className="reveal">
+            <article key={title}>
               <h3 className="major">{title}</h3>
               <p>{description}</p>
               {links.map(({ label, url }) => (

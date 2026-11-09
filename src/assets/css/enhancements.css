@@ -274,23 +274,6 @@
   outline-offset: 2px;
 }
 
-/* ---------- Reveal on scroll (hidden only once JS opts in) ---------- */
-.js-reveal .reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-
-.js-reveal .reveal.is-visible {
-  opacity: 1;
-  transform: none;
-}
-
-/* Stagger cards in a grid. */
-.js-reveal .features .reveal:nth-child(2n) {
-  transition-delay: 0.12s;
-}
-
 /* ---------- Compact inner pages (blog, utils, 404) ----------
  * The theme's generic page band is ~11em of padding plus a 6.5em angled
  * divider before content. Trim it: clear the fixed navbar, keep a slim

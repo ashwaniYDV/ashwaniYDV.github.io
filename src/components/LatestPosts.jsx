@@ -12,7 +12,7 @@ export default function LatestPosts({ limit = 2 }) {
       <div className="inner">
         <section className="features">
           {latest.map((post) => (
-            <article key={post.slug} className="post-card reveal">
+            <article key={post.slug} className="post-card">
               <h3 className="major">
                 <Link to={`/blog/${post.slug}`} className="post-card-link">
                   {post.title}

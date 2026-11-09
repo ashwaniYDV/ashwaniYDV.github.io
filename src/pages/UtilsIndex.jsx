@@ -12,7 +12,7 @@ export default function UtilsIndex() {
     <PageShell title="Utils" subtitle={UTILS_SUBTITLE}>
       <section className="features utils-grid">
         {utils.map(({ slug, title, icon, summary }) => (
-          <article key={slug} className="reveal">
+          <article key={slug}>
             <Link to={`/utils/${slug}`} className="util-card-link">
               <span className="util-card-icon" aria-hidden="true">
                 <i className={`fa ${icon}`}></i>

@@ -11,7 +11,7 @@ import NotFound from "./pages/NotFound.jsx";
 import UtilsIndex from "./pages/UtilsIndex.jsx";
 import UtilPage from "./pages/UtilPage.jsx";
 import { getUtil } from "./utils/registry.js";
-import { useBodyClass, useRevealOnScroll } from "./hooks.js";
+import { useBodyClass } from "./hooks.js";
 
 export default function App() {
   const { pathname, hash, key } = useLocation();
@@ -23,7 +23,6 @@ export default function App() {
   // Viewport-locked tools stop the page itself from scrolling.
   useBodyClass("is-tool-fixed", isToolPage && !tool.scrollable);
   useBodyClass("is-menu-visible", menuOpen);
-  useRevealOnScroll(pathname);
 
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && setMenuOpen(false);

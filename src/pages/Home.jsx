@@ -11,7 +11,7 @@ function SectionTitle({ children }) {
   return (
     <>
       <br />
-      <h1 className="myfont section-title reveal">
+      <h1 className="myfont section-title">
         {children}
       </h1>
       <br />
