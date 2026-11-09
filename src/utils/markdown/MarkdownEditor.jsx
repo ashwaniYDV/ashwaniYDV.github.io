@@ -84,11 +84,59 @@ const VIEWS = [
   { id: "preview", label: "Preview", icon: "fa-eye" },
 ];
 
+const MIN_SPLIT = 0.2;
+const MAX_SPLIT = 0.8;
+
 export default function MarkdownEditor({ heading }) {
   const [doc, setDoc, status] = useLocalStorage("markdown:doc", SAMPLE, { debounceMs: 400 });
   const [view, setView] = useLocalStorage("markdown:view", "split");
+  // Share of the width given to the source pane in split view (0.2 – 0.8).
+  const [split, setSplit] = useLocalStorage("markdown:split", 0.5);
+  const [dragging, setDragging] = useState(false); // drives the drag styling
+  const draggingRef = useRef(false); // read by handlers, so no move is lost before a re-render
   const [copied, setCopied] = useState(false);
   const textareaRef = useRef(null);
+  const panesRef = useRef(null);
+
+  const clampSplit = (r) => Math.min(MAX_SPLIT, Math.max(MIN_SPLIT, r));
+  const ratio = clampSplit(Number(split) || 0.5);
+
+  const splitAt = (clientX) => {
+    const rect = panesRef.current?.getBoundingClientRect();
+    if (rect?.width) setSplit(Math.round(clampSplit((clientX - rect.left) / rect.width) * 1000) / 1000);
+  };
+
+  const onDividerPointerDown = (e) => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId); // keep receiving moves outside the handle
+    } catch {
+      /* pointer already gone; the drag still works while over the handle */
+    }
+    draggingRef.current = true;
+    setDragging(true);
+  };
+  const onDividerPointerMove = (e) => {
+    if (draggingRef.current) splitAt(e.clientX);
+  };
+  const endDrag = (e) => {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {
+      /* not captured */
+    }
+    setDragging(false);
+  };
+  const onDividerKeyDown = (e) => {
+    const step = e.shiftKey ? 0.1 : 0.02;
+    const next = { ArrowLeft: ratio - step, ArrowRight: ratio + step, Home: MIN_SPLIT, End: MAX_SPLIT }[e.key];
+    if (next === undefined) return;
+    e.preventDefault();
+    setSplit(Math.round(clampSplit(next) * 1000) / 1000);
+  };
 
   // The page scrolls as a whole, so the textarea grows to fit its content
   // instead of scrolling inside itself. CSS min-height keeps short docs full-screen.
@@ -164,7 +212,11 @@ export default function MarkdownEditor({ heading }) {
         </button>
       </div>
 
-      <div className="md-panes">
+      <div
+        ref={panesRef}
+        className={dragging ? "md-panes is-dragging" : "md-panes"}
+        style={{ "--md-left": `${ratio}fr`, "--md-right": `${1 - ratio}fr` }}
+      >
         <div className="md-pane md-input">
           <label htmlFor="md-text" className="visually-hidden">
             Markdown source
@@ -178,6 +230,24 @@ export default function MarkdownEditor({ heading }) {
             placeholder="# Start writing…"
           />
         </div>
+        <div
+          className="md-divider"
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Resize editor and preview"
+          aria-controls="md-text"
+          aria-valuemin={MIN_SPLIT * 100}
+          aria-valuemax={MAX_SPLIT * 100}
+          aria-valuenow={Math.round(ratio * 100)}
+          tabIndex={0}
+          title="Drag to resize · double-click to reset"
+          onPointerDown={onDividerPointerDown}
+          onPointerMove={onDividerPointerMove}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
+          onDoubleClick={() => setSplit(0.5)}
+          onKeyDown={onDividerKeyDown}
+        />
         {/* Sanitized with DOMPurify above. */}
         <div className="md-pane md-preview post-body" aria-label="Preview" dangerouslySetInnerHTML={{ __html: html }} />
       </div>
