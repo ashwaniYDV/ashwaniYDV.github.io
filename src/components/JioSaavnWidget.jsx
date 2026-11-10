@@ -19,21 +19,48 @@ function forceMobileLayout() {
  * component stays mounted and is only hidden (not unmounted) on tool pages.
  * On desktop it is shown as the small mobile tile (see enhancements.css).
  */
+/**
+ * Run `fn` once the page has finished loading and the browser is idle (at most
+ * `timeout` ms later), so the player never competes with the page itself.
+ * Returns a cancel function.
+ */
+function whenPageIdle(fn, timeout = 4000) {
+  let idleId;
+  let timerId;
+  const schedule = () => {
+    if ("requestIdleCallback" in window) idleId = window.requestIdleCallback(fn, { timeout });
+    else timerId = window.setTimeout(fn, 1500);
+  };
+  if (document.readyState === "complete") schedule();
+  else window.addEventListener("load", schedule, { once: true });
+  return () => {
+    window.removeEventListener("load", schedule);
+    if (idleId !== undefined) window.cancelIdleCallback(idleId);
+    window.clearTimeout(timerId);
+  };
+}
+
 export default function JioSaavnWidget({ hidden = false }) {
-  useEffect(() => {
-    if (document.getElementById("jsw-init")) return;
-    const s = document.createElement("script");
-    s.id = "jsw-init";
-    s.src = `https://www.jiosaavn.com/embed/_s/embed.js?ver=${Date.now()}`;
-    s.onload = () => {
-      window.JioSaavnEmbedWidget?.init({ a: 1, q: 1, embed_src: PLAYLIST, partner_id: "ndtv" });
-      // embed.js posts its own "load" (isMobile: false on desktop) from iframe.onload; go after it.
-      document
-        .querySelector("#jsw #jsw-iframe")
-        ?.addEventListener("load", () => window.setTimeout(forceMobileLayout, 300));
-    };
-    document.body.appendChild(s);
-  }, []);
+  useEffect(
+    () =>
+      // The player (embed.js + an iframe with its own scripts) is the heaviest thing
+      // on the page and nothing depends on it, so it loads last.
+      whenPageIdle(() => {
+        if (document.getElementById("jsw-init")) return;
+        const s = document.createElement("script");
+        s.id = "jsw-init";
+        s.src = `https://www.jiosaavn.com/embed/_s/embed.js?ver=${Date.now()}`;
+        s.onload = () => {
+          window.JioSaavnEmbedWidget?.init({ a: 1, q: 1, embed_src: PLAYLIST, partner_id: "ndtv" });
+          // embed.js posts its own "load" (isMobile: false on desktop) from iframe.onload; go after it.
+          document
+            .querySelector("#jsw #jsw-iframe")
+            ?.addEventListener("load", () => window.setTimeout(forceMobileLayout, 300));
+        };
+        document.body.appendChild(s);
+      }),
+    [],
+  );
 
   useEffect(() => {
     // embed.js debounces its resize message by 250ms; send ours just after.
