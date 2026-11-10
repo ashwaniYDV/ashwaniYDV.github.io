@@ -5,7 +5,7 @@ export default function Etc() {
     <section id="three" className="wrapper spotlight style1 alt">
       <div className="inner">
         <a href="#" className="image">
-          <img src={img("guitar.jpg")} alt="Playing guitar" />
+          <img src={img("guitar.webp")} alt="Playing guitar" loading="lazy" decoding="async" />
         </a>
         <div className="content">
           <h1>Hi, I’m Ashwani, the guy behind and front of this site!</h1>

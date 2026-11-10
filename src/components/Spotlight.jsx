@@ -29,7 +29,14 @@ export default function Spotlight({
     <section className={`wrapper spotlight ${VARIANT_CLASSES[variant] ?? VARIANT_CLASSES.light}`}>
       <div className="inner">
         <a {...external} className={imageClass}>
-          <img src={img(image)} alt={title} className={flatImage ? "zeroradius" : undefined} style={imageStyle} />
+          <img
+            src={img(image)}
+            alt={title}
+            className={flatImage ? "zeroradius" : undefined}
+            style={imageStyle}
+            loading="lazy"
+            decoding="async"
+          />
         </a>
         <div className="content">
           <h2 className={titleClassName} style={titleStyle}>

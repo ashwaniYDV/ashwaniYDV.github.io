@@ -5,7 +5,7 @@ export default function About() {
     <section id="one" className="wrapper spotlight style1">
       <div className="inner">
         <a className="image">
-          <img src={img("octocat.png")} alt="GitHub Octocat" />
+          <img src={img("octocat.webp")} alt="GitHub Octocat" loading="lazy" decoding="async" />
         </a>
         <div className="content">
           <h2 className="major myfont">About Me!</h2>

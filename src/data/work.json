@@ -3,7 +3,7 @@
     "variant": "dark",
     "title": "AWS - SDE2",
     "url": "https://aws.amazon.com/rds/aurora/",
-    "image": "aws.gif",
+    "image": "aws.webp",
     "imageStyle": {
       "borderRadius": "20%",
       "width": "70%"
@@ -19,7 +19,7 @@
     "variant": "light",
     "title": "Amazon - SDE2",
     "url": "https://amazon.com/",
-    "image": "amzn1.gif",
+    "image": "amzn1.webp",
     "imageStyle": {
       "borderRadius": "20%",
       "width": "70%"
@@ -34,7 +34,7 @@
     "variant": "dark",
     "title": "Twilio - SDE2",
     "url": "https://twilio.com/",
-    "image": "twilio.gif",
+    "image": "twilio.webp",
     "imageStyle": {
       "borderRadius": "20%",
       "width": "70%"
@@ -49,7 +49,7 @@
     "variant": "light",
     "title": "Flipkart - SDE1",
     "url": "https://flipkart.com/",
-    "image": "flipkart-gif.gif",
+    "image": "flipkart-gif.webp",
     "imageStyle": {
       "borderRadius": "20%",
       "width": "40%"
@@ -64,7 +64,7 @@
     "variant": "dark",
     "title": "Zomato- SDE Intern",
     "url": "https://zomato.com/",
-    "image": "zomato3.gif",
+    "image": "zomato3.webp",
     "imageStyle": {
       "borderRadius": "20%"
     },
@@ -78,7 +78,7 @@
     "variant": "light",
     "title": "Success Numbers Pvt. Ltd. - SWE Intern",
     "url": "https://snumbers.com/",
-    "image": "snumbers.png",
+    "image": "snumbers.webp",
     "flatImage": true,
     "lines": [
       "Worked on OMS (Order Management System) and developed microservices for tracking whole order life-cycle",
@@ -102,7 +102,7 @@
     "variant": "light",
     "title": "Google Summer of Code - Sophomore year",
     "url": "https://summerofcode.withgoogle.com/",
-    "image": "gsoc_logo.png",
+    "image": "gsoc_logo.webp",
     "flatImage": true,
     "lines": [
       "Student developer at GSoC 2020 for RocketChat",
@@ -125,7 +125,7 @@
     "variant": "dark",
     "title": "Inter IIT Tech Meet 8.0, IIT Roorkee",
     "url": "https://www.facebook.com/interiit.tech",
-    "image": "interiittechmmeet.png",
+    "image": "interiittechmmeet.webp",
     "flatImage": true,
     "lines": [
       "I with my team won Gold Medal for the event \"Ashoka's Tech for Change\"",
@@ -145,7 +145,7 @@
     "title": "NJACK IITPatna",
     "titleStyle": null,
     "url": "https://njack.iitp.ac.in/",
-    "image": "njackLogo.png",
+    "image": "njackLogo.webp",
     "flatImage": true,
     "lines": [
       "Advisor: Development & Open Source",
