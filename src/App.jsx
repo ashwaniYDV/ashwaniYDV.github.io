@@ -10,15 +10,15 @@ import BlogPost from "./pages/BlogPost.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import UtilsIndex from "./pages/UtilsIndex.jsx";
 import UtilPage from "./pages/UtilPage.jsx";
-import { getUtil } from "./utils/registry.js";
+import { matchToolPath, sections } from "./utils/registry.js";
 import { useBodyClass } from "./hooks.js";
 
 export default function App() {
   const { pathname, hash, key } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   // Tool pages are full-screen apps: no navbar, footer or floating widgets.
-  // The tool's own toolbar carries the "‹ Utils" link back.
-  const tool = getUtil(pathname.match(/^\/utils\/([^/]+)\/?$/)?.[1]);
+  // The tool's own toolbar carries the "‹ Section" link back.
+  const tool = matchToolPath(pathname)?.tool;
   const isToolPage = Boolean(tool);
   // Viewport-locked tools stop the page itself from scrolling.
   useBodyClass("is-tool-fixed", isToolPage && !tool.scrollable);
@@ -47,8 +47,12 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/blog" element={<BlogIndex />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
-          <Route path="/utils" element={<UtilsIndex />} />
-          <Route path="/utils/:slug" element={<UtilPage />} />
+          {sections.map((section) => (
+            <Route key={section.id} path={section.path}>
+              <Route index element={<UtilsIndex section={section} />} />
+              <Route path=":slug" element={<UtilPage section={section} />} />
+            </Route>
+          ))}
           <Route path="*" element={<NotFound />} />
         </Routes>
         {!isToolPage && <Footer />}

@@ -6,8 +6,7 @@ import App from "./App.jsx";
 
 export { posts } from "./posts";
 export { BLOG_SUBTITLE } from "./pages/BlogIndex.jsx";
-export { UTILS_SUBTITLE } from "./pages/UtilsIndex.jsx";
-export { utils } from "./utils/registry.js";
+export { sections } from "./utils/registry.js";
 
 export function render(url) {
   return renderToString(

@@ -1,7 +1,7 @@
 import { Component, Suspense } from "react";
 import { Link, useParams } from "react-router";
 import NotFound from "./NotFound.jsx";
-import { getUtil } from "../utils/registry.js";
+import { getTool } from "../utils/registry.js";
 import { usePageTitle } from "../hooks.js";
 
 /** Keeps a crashing utility (or a failed chunk download) from taking down the site. */
@@ -27,12 +27,12 @@ class UtilErrorBoundary extends Component {
   }
 }
 
-/** "← Utils / Tool name": rendered by each tool at the start of its own toolbar. */
-function ToolHeading({ util }) {
+/** "‹ Section / Tool name": rendered by each tool at the start of its own toolbar. */
+function ToolHeading({ section, util }) {
   return (
     <div className="tool-heading">
-      <Link to="/utils" className="tool-back">
-        <i className="fa fa-angle-left" aria-hidden="true"></i>&nbsp;Utils
+      <Link to={section.path} className="tool-back">
+        <i className="fa fa-angle-left" aria-hidden="true"></i>&nbsp;{section.title}
       </Link>
       <h1 className="tool-title">
         <i className={`fa ${util.icon}`} aria-hidden="true"></i>&nbsp;{util.title}
@@ -45,14 +45,14 @@ function ToolHeading({ util }) {
  * Full-screen tool layout: the tool fills the whole viewport. App hides the
  * site navbar, menu, footer and floating widgets on these pages.
  */
-export default function UtilPage() {
+export default function UtilPage({ section }) {
   const { slug } = useParams();
-  const util = getUtil(slug);
-  usePageTitle(util ? `${util.title} | Utils | Ashwani Yadav` : "Not found | Ashwani Yadav");
+  const util = getTool(section, slug);
+  usePageTitle(util ? `${util.title} | ${section.title} | Ashwani Yadav` : "Not found | Ashwani Yadav");
 
   if (!util) return <NotFound />;
   const { Component: Tool } = util;
-  const heading = <ToolHeading util={util} />;
+  const heading = <ToolHeading section={section} util={util} />;
 
   return (
     <main className={util.scrollable ? "tool-page is-scrollable" : "tool-page"}>

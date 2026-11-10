@@ -1,19 +1,19 @@
 import { Link } from "react-router";
 import PageShell from "./PageShell.jsx";
-import { utils } from "../utils/registry.js";
+import { sections } from "../utils/registry.js";
 import { usePageTitle } from "../hooks.js";
 
-export const UTILS_SUBTITLE = "Small tools that run in your browser. Your data never leaves this device";
-
-export default function UtilsIndex() {
-  usePageTitle("Utils | Ashwani Yadav");
+/** Index page for one tool section (/utils, /pgutils, ...): a card per tool. */
+export default function UtilsIndex({ section }) {
+  usePageTitle(`${section.title} | Ashwani Yadav`);
+  const others = sections.filter((s) => s.id !== section.id);
 
   return (
-    <PageShell title="Utils" subtitle={UTILS_SUBTITLE}>
+    <PageShell title={section.title} subtitle={section.subtitle}>
       <section className="features utils-grid">
-        {utils.map(({ slug, title, icon, summary }) => (
+        {section.tools.map(({ slug, title, icon, summary }) => (
           <article key={slug}>
-            <Link to={`/utils/${slug}`} className="util-card-link">
+            <Link to={`${section.path}/${slug}`} className="util-card-link">
               <span className="util-card-icon" aria-hidden="true">
                 <i className={`fa ${icon}`}></i>
               </span>
@@ -24,6 +24,19 @@ export default function UtilsIndex() {
           </article>
         ))}
       </section>
+      {others.length > 0 && (
+        <p className="utils-also">
+          Also see:{" "}
+          {others.map((s, i) => (
+            <span key={s.id}>
+              {i > 0 && " · "}
+              <Link to={s.path}>
+                <i className={`fa ${s.icon}`} aria-hidden="true"></i>&nbsp;{s.title}
+              </Link>
+            </span>
+          ))}
+        </p>
+      )}
     </PageShell>
   );
 }

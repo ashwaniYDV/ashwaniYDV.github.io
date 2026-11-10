@@ -13,7 +13,7 @@ const SSR_DIR = path.resolve("dist-ssr");
 const escapeHtml = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
-const { render, posts, BLOG_SUBTITLE, utils, UTILS_SUBTITLE } = await import(pathToFileURL(path.join(SSR_DIR, "entry-server.js")).href);
+const { render, posts, BLOG_SUBTITLE, sections } = await import(pathToFileURL(path.join(SSR_DIR, "entry-server.js")).href);
 const template = await fs.readFile(path.join(DIST, "index.html"), "utf8");
 
 if (!template.includes('<div id="root"></div>')) {
@@ -64,13 +64,20 @@ const pages = [
     description: post.summary || post.title,
     type: "article",
   })),
-  { url: "/utils", file: "utils/index.html", title: `Utils | ${AUTHOR}`, description: UTILS_SUBTITLE },
-  ...utils.map((util) => ({
-    url: `/utils/${util.slug}`,
-    file: `utils/${util.slug}/index.html`,
-    title: `${util.title} | Utils | ${AUTHOR}`,
-    description: util.summary,
-  })),
+  ...sections.flatMap((section) => [
+    {
+      url: section.path,
+      file: `${section.path.slice(1)}/index.html`,
+      title: `${section.title} | ${AUTHOR}`,
+      description: section.subtitle,
+    },
+    ...section.tools.map((tool) => ({
+      url: `${section.path}/${tool.slug}`,
+      file: `${section.path.slice(1)}/${tool.slug}/index.html`,
+      title: `${tool.title} | ${section.title} | ${AUTHOR}`,
+      description: tool.summary,
+    })),
+  ]),
   // GitHub Pages serves this for any unknown path.
   { url: "/404", file: "404.html", title: `Not found | ${AUTHOR}`, description: "Page not found" },
 ];

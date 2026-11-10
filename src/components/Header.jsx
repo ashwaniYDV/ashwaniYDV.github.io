@@ -36,6 +36,9 @@ export default function Header({ hasBanner, onMenuToggle }) {
         <Link className="button header-extra" to="/utils">
           <i className="fa fa-wrench" aria-hidden="true"></i>&nbsp;Utils
         </Link>
+        <Link className="button header-extra" to="/pgutils">
+          <i className="fa fa-database" aria-hidden="true"></i>&nbsp;PGUtils
+        </Link>
         <a
           className="button"
           href="#menu"

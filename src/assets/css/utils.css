@@ -26,6 +26,7 @@ body.is-tool-fixed {
 .tool-page > .notepad,
 .tool-page > .md-editor,
 .tool-page > .diff-checker,
+.tool-page > .pg-explain,
 .tool-page > .whiteboard {
   display: flex;
   flex: 1;
@@ -114,6 +115,11 @@ body.is-tool-fixed {
 
 .util-message {
   opacity: 0.8;
+}
+
+.utils-also {
+  margin-top: 1em;
+  opacity: 0.9;
 }
 
 /* ---------- Shared chrome ---------- */
@@ -884,4 +890,703 @@ body.is-tool-fixed {
   #header nav .header-extra {
     display: none;
   }
+}
+
+/* ---------- PGUtils: EXPLAIN visualizer ----------
+ * Viewport-locked: summary/details sidebar | plan tree, each scrolling on its own.
+ * Surfaces use the shared paper colours; buttons inside reset the theme's button styles.
+ */
+.pg-explain {
+  --pe-hot: #e5484d;
+  --pe-warm: #f59e0b;
+  --pe-cool: #8a93a6;
+  --pe-low: #3b82f6;
+  --pe-accent: #b4236a;
+}
+
+.pg-explain .util-toolbar .button.small {
+  padding: 0 0.85em;
+}
+
+.pe-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Input view */
+.pe-input {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  gap: 0.6em;
+}
+
+.pe-input-hint {
+  margin: 0;
+  font-size: 0.8em;
+  opacity: 0.9;
+}
+
+.pe-input-hint code {
+  margin: 0 0.1em;
+  padding: 0.1em 0.4em;
+  font-size: 0.95em;
+}
+
+.tool-page .pe-input textarea {
+  flex: 1;
+  min-height: 0;
+  padding: 0.9em 1.1em;
+  font-family: "Courier New", monospace;
+  font-size: 0.82em;
+  line-height: 1.5;
+  white-space: pre;
+  overflow: auto;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  caret-color: #e5484d;
+}
+
+.tool-page .pe-input textarea:focus {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(255, 143, 177, 0.45);
+}
+
+.pe-input-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+}
+
+.pe-error {
+  color: #ffb4b4;
+  font-size: 0.85em;
+}
+
+/* Plan view layout */
+.pe-main {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(300px, 380px) 1fr;
+  gap: 0.9em;
+  min-height: 0;
+}
+
+.pe-side,
+.pe-canvas {
+  min-height: 0;
+  overflow: auto;
+  border-radius: 6px;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.pe-side {
+  padding: 1em 1.1em 1.25em;
+  font-size: 0.85em;
+}
+
+.pe-canvas {
+  padding: 1em 1.25em 1.5em;
+  background-color: #f3f1ec;
+}
+
+@media screen and (max-width: 980px) {
+  .pe-main {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+
+  .pe-side {
+    order: 2;
+  }
+}
+
+/* Re-ink theme elements on paper (the theme assumes white text on dark). */
+.pe-side p,
+.pe-canvas p,
+#root .pe-side strong {
+  color: var(--ink);
+}
+
+#root .pe-h,
+#root .pe-h3 {
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+#root .pe-h {
+  margin: 0.2em 0 0.2em;
+  font-size: 1.25em;
+}
+
+#root .pe-h3 {
+  margin: 1.2em 0 0.5em;
+  padding-bottom: 0.3em;
+  border-bottom: solid 1px var(--paper-rule);
+  font-size: 0.8em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.pe-subtitle {
+  margin: 0 0 0.5em;
+  color: var(--ink-soft) !important;
+}
+
+.pe-muted {
+  color: var(--ink-soft) !important;
+  font-size: 0.95em;
+}
+
+.pe-note {
+  margin: 0.5em 0 0.75em;
+  padding: 0.6em 0.8em;
+  border-left: 3px solid var(--pe-warm);
+  background: #fff6e5;
+  font-size: 0.95em;
+}
+
+.pe-tip {
+  margin-top: 1.25em;
+}
+
+.pe-details section p {
+  margin: 0 0 0.5em;
+  line-height: 1.55;
+}
+
+/* Small reset for every button drawn inside the visualizer panes. */
+.tool-page .pg-explain .pe-node,
+.tool-page .pg-explain .pe-toggle,
+.tool-page .pg-explain .pe-collapsed,
+.tool-page .pg-explain .pe-sharebar-track button,
+.tool-page .pg-explain .pe-issue-link,
+.tool-page .pg-explain .pe-back,
+.tool-page .pg-explain .pe-inline-link {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.tool-page .pg-explain .pe-node:focus-visible,
+.tool-page .pg-explain .pe-toggle:focus-visible,
+.tool-page .pg-explain .pe-collapsed:focus-visible,
+.tool-page .pg-explain .pe-sharebar-track button:focus-visible,
+.tool-page .pg-explain .pe-issue-link:focus-visible,
+.tool-page .pg-explain .pe-back:focus-visible,
+.tool-page .pg-explain .pe-inline-link:focus-visible {
+  outline: 2px solid var(--pe-accent);
+  outline-offset: 2px;
+}
+
+/* The theme forces `color: #fff !important` on every <button>; buttons on paper need their own. */
+.tool-page .pg-explain .pe-issue-link,
+.tool-page .pg-explain .pe-toggle,
+.tool-page .pg-explain .pe-collapsed {
+  color: var(--ink) !important;
+}
+
+.tool-page .pg-explain .pe-back,
+.tool-page .pg-explain .pe-inline-link {
+  color: var(--pe-accent) !important;
+  font-weight: 600;
+}
+
+.tool-page .pg-explain .pe-back:hover,
+.tool-page .pg-explain .pe-inline-link:hover {
+  text-decoration: underline;
+}
+
+/* Stats grid */
+.pe-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.6em 0.9em;
+}
+
+.pe-stat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pe-stat-label {
+  font-size: 0.78em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.pe-stat-value {
+  font-size: 1.05em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.pe-stat-hint {
+  font-size: 0.8em;
+  color: var(--ink-soft);
+}
+
+/* Findings */
+#root .pe-issues {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#root .pe-issues > li {
+  margin: 0 0 0.5em;
+  padding: 0.55em 0.7em;
+  border-radius: 5px;
+  border-left: 4px solid var(--pe-low);
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+#root .pe-issues > li.is-high {
+  border-left-color: var(--pe-hot);
+}
+
+#root .pe-issues > li.is-medium {
+  border-left-color: var(--pe-warm);
+}
+
+.tool-page .pg-explain .pe-issue-link {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.15em 0.5em;
+  width: 100%;
+}
+
+.pe-issue-node {
+  font-size: 0.85em;
+  color: var(--ink-soft);
+  align-self: center;
+}
+
+.pe-issue-title {
+  grid-column: 1 / -1;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.pe-issues details summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  align-items: baseline;
+  cursor: pointer;
+  list-style: none;
+}
+
+.pe-issues details summary::-webkit-details-marker {
+  display: none;
+}
+
+.pe-issues details p {
+  margin: 0.45em 0 0.1em;
+  font-size: 0.95em;
+}
+
+.pe-sev {
+  display: inline-block;
+  padding: 0 0.45em;
+  border-radius: 3px;
+  font-size: 0.72em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.7;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--pe-low);
+}
+
+.pe-sev.is-high {
+  background: var(--pe-hot);
+}
+
+.pe-sev.is-medium {
+  background: var(--pe-warm);
+  color: #3a2600;
+}
+
+/* Buffers table and key/value details */
+.pe-table {
+  font-size: 0.95em;
+  font-variant-numeric: tabular-nums;
+}
+
+.pe-tr {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 0.5em;
+  padding: 0.2em 0;
+  border-bottom: solid 1px var(--paper-rule);
+}
+
+.pe-tr > span:not(:first-child) {
+  text-align: right;
+}
+
+.pe-th {
+  font-size: 0.8em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.pe-kv-row {
+  display: grid;
+  grid-template-columns: minmax(7.5em, 34%) 1fr;
+  gap: 0.6em;
+  padding: 0.3em 0;
+  border-bottom: solid 1px var(--paper-rule);
+}
+
+.pe-kv-key {
+  color: var(--ink-soft);
+}
+
+#root .pe-kv-val {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 0.92em;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Share bar */
+.pe-sharebar {
+  margin-bottom: 1.1em;
+}
+
+.pe-sharebar-title {
+  margin-bottom: 0.35em;
+  font-weight: 700;
+}
+
+.pe-sharebar-track {
+  display: flex;
+  height: 1.8em;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #e2dfd7;
+}
+
+.tool-page .pg-explain .pe-sharebar-track button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3px;
+  border-right: 1px solid #f3f1ec;
+  font-size: 0.75em;
+  font-weight: 700;
+  color: #fff;
+  background: var(--pe-cool);
+}
+
+.tool-page .pg-explain .pe-sharebar-track button.is-hot {
+  background: var(--pe-hot);
+}
+
+.tool-page .pg-explain .pe-sharebar-track button.is-warm {
+  background: var(--pe-warm);
+}
+
+.tool-page .pg-explain .pe-sharebar-track button.is-selected {
+  box-shadow: inset 0 0 0 3px var(--ink);
+}
+
+.pe-sharebar-rest {
+  background: #e2dfd7;
+}
+
+/* Tree: nested lists with connector lines drawn by ::before/::after. */
+#root .pe-tree,
+#root .pe-children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#root .pe-tree li,
+#root .pe-children li {
+  padding-left: 0;
+}
+
+#root .pe-children {
+  margin-left: 1.6em;
+}
+
+#root .pe-children > li {
+  position: relative;
+  padding-left: 1.6em;
+}
+
+#root .pe-children > li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-left: 2px solid #b9b4a8;
+}
+
+#root .pe-children > li:last-child::before {
+  bottom: auto;
+  height: 1.75em;
+}
+
+#root .pe-children > li::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1.75em;
+  width: 1.4em;
+  border-top: 2px solid #b9b4a8;
+}
+
+.pe-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.3em 0;
+  width: max-content;
+}
+
+.pe-rows-badge {
+  display: inline-block;
+  min-width: 3.2em;
+  padding: 0 0.5em;
+  border: 2px solid #9a9486;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 0.78em;
+  font-weight: 700;
+  line-height: 1.6;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.pe-rows-badge.is-off {
+  border-color: var(--pe-warm);
+  background: #fff3dc;
+}
+
+.tool-page .pg-explain .pe-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15em;
+  height: 1.15em;
+  border: 2px solid #9a9486;
+  border-radius: 3px;
+  background: #fff;
+  color: var(--ink-soft);
+  font-size: 0.7em;
+}
+
+.pe-toggle-spacer {
+  display: inline-block;
+  width: 0.8em;
+}
+
+.tool-page .pg-explain .pe-node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  min-width: 15em;
+  max-width: 46em;
+  white-space: normal;
+  padding: 0.45em 0.8em 0.6em;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background: #2b2f3d;
+  color: #f4f4f7;
+  font-size: 0.85em;
+  line-height: 1.35;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  transition: box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.tool-page .pg-explain .pe-node:hover {
+  background: #363b4d;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.tool-page .pg-explain .pe-node.is-selected {
+  background: #1f6f94;
+  border-color: #7fd0f0;
+}
+
+.tool-page .pg-explain .pe-node.is-never {
+  opacity: 0.55;
+}
+
+.pe-node-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+}
+
+.pe-node-id {
+  font-weight: 700;
+  opacity: 0.75;
+}
+
+.pe-node-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.pe-node-type {
+  font-weight: 700;
+}
+
+.pe-node.is-seq .pe-node-type {
+  color: #ffb86b;
+}
+
+.pe-node.is-nl .pe-node-type {
+  color: #ff9ec4;
+}
+
+.pe-target {
+  display: inline;
+}
+
+.pe-target > span + span::before {
+  content: " ";
+}
+
+.pe-rel {
+  color: #ffd166;
+}
+
+.pe-index {
+  color: #9ad8ff;
+}
+
+.pe-subplan {
+  margin-left: 0.3em;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+/* Paper-side variants of the target colours (details panel). */
+.pe-side .pe-rel {
+  color: #a35f00;
+}
+
+.pe-side .pe-index {
+  color: #1d5f99;
+}
+
+.pe-issue-dot {
+  flex: none;
+  font-size: 0.9em;
+  color: var(--pe-low);
+}
+
+.pe-issue-dot.is-high {
+  color: #ff6b6f;
+}
+
+.pe-issue-dot.is-medium {
+  color: #ffc04d;
+}
+
+.pe-node-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2em 0.8em;
+  font-size: 0.85em;
+  opacity: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+
+.pe-metric.is-hot {
+  color: #ff8d90;
+  font-weight: 700;
+}
+
+.pe-metric.is-warm {
+  color: #ffc76b;
+  font-weight: 700;
+}
+
+.pe-misest {
+  color: #ffc76b;
+}
+
+.pe-heat {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pe-heat > span {
+  display: block;
+  height: 100%;
+  background: var(--pe-cool);
+}
+
+.pe-heat > span.is-hot {
+  background: var(--pe-hot);
+}
+
+.pe-heat > span.is-warm {
+  background: var(--pe-warm);
+}
+
+.tool-page .pg-explain .pe-collapsed {
+  padding: 0.25em 0.7em;
+  border-radius: 10px;
+  background: #d9d5cc;
+  color: var(--ink-soft);
+  font-size: 0.78em;
+}
+
+.pe-legend {
+  margin: 1.5em 0 0;
+  font-size: 0.78em;
+  color: var(--ink-soft) !important;
+}
+
+.pe-legend-seq,
+.pe-legend-nl {
+  padding: 0 0.4em;
+  border-radius: 3px;
+  background: #2b2f3d;
+  font-weight: 700;
+}
+
+.pe-legend-seq {
+  color: #ffb86b;
+}
+
+.pe-legend-nl {
+  color: #ff9ec4;
 }
