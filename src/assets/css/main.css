@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Raleway:200,700|Source+Sans+Pro:300,600,300italic,600italic");
+/* Web fonts (Raleway, Source Sans Pro) are loaded from index.html, not @import, so they don't block on this file. */
 
 /*
 	Solid State by HTML5 UP

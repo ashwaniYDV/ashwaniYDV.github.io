@@ -11,11 +11,28 @@
     <meta property="og:url" content="https://ashwaniydv.github.io" />
     <meta name="theme-color" content="#4d4256" />
     <link rel="alternate" type="application/rss+xml" title="Ashwani Yadav | Blog" href="/rss.xml" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Josefin+Sans:400,400italic|Dancing+Script" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <!-- One font request (was an @import chain in main.css plus a second link), only the
+         weights the theme uses, and display=swap so text paints before fonts arrive. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Raleway:200,700|Source+Sans+Pro:300,300italic,600,600italic|Josefin+Sans:400&display=swap"
+    />
+    <!-- Hero photo is a CSS background, so the browser would only find it after parsing the CSS. -->
+    <link rel="preload" as="image" type="image/webp" href="/src/assets/images/avatar.webp" fetchpriority="high" />
   </head>
   <body class="is-loading">
     <div id="root"></div>
+    <!-- Start the theme's intro animation as soon as the pre-rendered page has painted,
+         instead of waiting for main.jsx (or every image) to load. -->
+    <script>
+      requestAnimationFrame(function () {
+        setTimeout(function () {
+          document.body.classList.remove("is-loading");
+        }, 100);
+      });
+    </script>
     <script type="module" src="/src/main.jsx"></script>
     <!-- https://ashwani-iitp.goatcounter.com/ -->
     <script data-goatcounter="https://ashwani-iitp.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>

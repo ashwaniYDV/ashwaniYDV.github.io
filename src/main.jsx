@@ -1,6 +1,8 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router";
+// Self-hosted (was a render-blocking stylesheet from cdnjs): one fewer origin to connect to.
+import "font-awesome/css/font-awesome.min.css";
 import "./assets/css/main.css";
 import "./assets/css/home.css";
 import "./assets/css/standards-mode.css";
@@ -10,17 +12,18 @@ import "./assets/css/enhancements.css";
 import "./assets/css/utils.css";
 import App from "./App.jsx";
 
-// Pages are pre-rendered at build time (scripts/prerender.mjs) for link
-// previews and SEO; the client then takes over with a fresh render.
-createRoot(document.getElementById("root")).render(
+const app = (
   <StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </StrictMode>,
+  </StrictMode>
 );
 
-// Solid State keeps intro animations paused until the page has loaded.
-const ready = () => window.setTimeout(() => document.body.classList.remove("is-loading"), 100);
-if (document.readyState === "complete") ready();
-else window.addEventListener("load", ready, { once: true });
+// Built pages are pre-rendered (scripts/prerender.mjs), so attach to that markup
+// instead of throwing it away and rendering again. `npm run dev` serves an
+// empty #root, which still needs a normal render.
+// The intro animation (body.is-loading) is started by an inline script in index.html.
+const container = document.getElementById("root");
+if (container.hasChildNodes()) hydrateRoot(container, app);
+else createRoot(container).render(app);
