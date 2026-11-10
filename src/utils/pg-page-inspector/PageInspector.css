@@ -1,0 +1,771 @@
+/* Page & tuple inspector (/pgutils/page-inspector). Prefix: pi-. Viewport-locked. */
+.pg-page-inspector {
+  --pi-live: #1f9d55;
+  --pi-live-bg: #d9f2e3;
+  --pi-dead: #c2410c;
+  --pi-dead-bg: #fde3d6;
+  --pi-warn: #b7791f;
+  --pi-warn-bg: #fdf0c8;
+  --pi-hot: #7c3aed;
+  --pi-hot-bg: #ece3fd;
+  --pi-update: #2563eb;
+  --pi-muted: #8a93a6;
+  --pi-accent: #b4236a;
+}
+
+.pg-page-inspector .util-toolbar .button.small {
+  padding: 0 0.85em;
+}
+
+/* Input view */
+.pi-input {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.6em;
+  min-height: 0;
+}
+
+.pi-input-hint {
+  margin: 0;
+  font-size: 0.8em;
+  opacity: 0.9;
+}
+
+.pi-input-hint code {
+  margin: 0 0.1em;
+  padding: 0.1em 0.4em;
+  font-size: 0.95em;
+}
+
+.tool-page .pi-input textarea {
+  flex: 1;
+  min-height: 0;
+  padding: 0.9em 1.1em;
+  font-family: "Courier New", monospace;
+  font-size: 0.82em;
+  line-height: 1.5;
+  white-space: pre;
+  overflow: auto;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  caret-color: #e5484d;
+}
+
+.tool-page .pi-input textarea:focus {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(255, 143, 177, 0.45);
+}
+
+.pi-input-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+}
+
+.pi-error {
+  color: #ffb4b4;
+  font-size: 0.85em;
+}
+
+/* Layout */
+.pi-main {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(300px, 400px) 1fr;
+  gap: 0.9em;
+  min-height: 0;
+}
+
+.pi-side,
+.pi-canvas {
+  min-height: 0;
+  overflow: auto;
+  border-radius: 6px;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.pi-side {
+  padding: 1em 1.1em 1.25em;
+  font-size: 0.85em;
+}
+
+.pi-canvas {
+  padding: 0.8em 1.25em 1.5em;
+  background-color: #f3f1ec;
+  font-size: 0.85em;
+}
+
+@media screen and (max-width: 980px) {
+  .pi-main {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+
+  .pi-side {
+    order: 2;
+  }
+}
+
+.pi-side p,
+.pi-canvas p {
+  color: var(--ink);
+}
+
+#root .pi-h,
+#root .pi-h3 {
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+#root .pi-h {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0.2em 0;
+  font-size: 1.25em;
+}
+
+#root .pi-h3 {
+  margin: 1.2em 0 0.5em;
+  padding-bottom: 0.3em;
+  border-bottom: solid 1px var(--paper-rule);
+  font-size: 0.8em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+#root .pi-h3.pi-first {
+  margin-top: 0.2em;
+}
+
+.pi-subtitle {
+  margin: 0 0 0.5em;
+  color: var(--ink-soft) !important;
+}
+
+.pi-muted {
+  color: var(--ink-soft) !important;
+}
+
+.pi-note {
+  margin: 0.5em 0 0.75em;
+  padding: 0.6em 0.8em;
+  border-left: 3px solid var(--pi-warn);
+  background: #fff6e5;
+}
+
+.pi-tip {
+  margin-top: 1.25em;
+}
+
+#root .pi-notes,
+#root .pi-legend,
+#root .pi-flaglist,
+#root .pi-chains {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#root .pi-notes li {
+  margin: 0 0 0.35em;
+  padding-left: 0.9em;
+  border-left: 2px solid var(--paper-rule);
+  line-height: 1.45;
+}
+
+/* Reset buttons drawn on paper (the theme forces white text and big padding). */
+.tool-page .pg-page-inspector .pi-back,
+.tool-page .pg-page-inspector .pi-inline-link,
+.tool-page .pg-page-inspector .pi-chip,
+.tool-page .pg-page-inspector .pi-row-btn,
+.tool-page .pg-page-inspector .pi-action {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.tool-page .pg-page-inspector .pi-back:focus-visible,
+.tool-page .pg-page-inspector .pi-inline-link:focus-visible,
+.tool-page .pg-page-inspector .pi-chip:focus-visible,
+.tool-page .pg-page-inspector .pi-row-btn:focus-visible,
+.tool-page .pg-page-inspector .pi-action:focus-visible,
+.pi-map [role="button"]:focus-visible {
+  outline: 2px solid var(--pi-accent);
+  outline-offset: 2px;
+}
+
+.tool-page .pg-page-inspector .pi-back {
+  color: var(--pi-accent) !important;
+  font-size: 0.9em;
+}
+
+.tool-page .pg-page-inspector .pi-inline-link {
+  color: var(--pi-accent) !important;
+  text-decoration: underline;
+}
+
+.tool-page .pg-page-inspector .pi-row-btn {
+  min-width: 1.6em;
+  color: var(--pi-accent) !important;
+  font-weight: 700;
+  text-align: center;
+}
+
+.tool-page .pg-page-inspector .pi-action {
+  display: block;
+  margin-top: 1.25em;
+  padding: 0.55em 0.9em;
+  border-radius: 5px;
+  background: var(--pi-accent);
+  color: #fff !important;
+  font-weight: 600;
+  text-align: center;
+}
+
+.tool-page .pg-page-inspector .pi-action:hover {
+  filter: brightness(1.1);
+}
+
+/* Key/value list */
+.pi-kv {
+  margin: 0;
+}
+
+.pi-kv-row {
+  display: grid;
+  grid-template-columns: 7.5em 1fr;
+  gap: 0.6em;
+  padding: 0.3em 0;
+  border-bottom: 1px dashed var(--paper-rule);
+}
+
+.pi-kv dt {
+  color: var(--ink-soft);
+  font-family: "Courier New", monospace;
+  font-size: 0.95em;
+}
+
+.pi-kv dd {
+  margin: 0;
+  color: var(--ink);
+  word-break: break-word;
+}
+
+.pi-kv-hint {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 0.88em;
+  line-height: 1.4;
+}
+
+/* Inline code on paper */
+.pg-page-inspector .pi-side code,
+.pg-page-inspector .pi-canvas code {
+  margin: 0;
+  padding: 0 0.25em;
+  border: 0;
+  border-radius: 3px;
+  background: #ebe8e0;
+  color: var(--ink);
+  font-size: 0.92em;
+}
+
+/* Flag bits */
+.pi-bits-head {
+  margin-bottom: 0.4em;
+}
+
+#root .pi-flaglist li {
+  display: grid;
+  grid-template-columns: 4.6em 1fr;
+  column-gap: 0.4em;
+  padding: 0.12em 0;
+  color: var(--pi-muted);
+}
+
+#root .pi-flaglist li.is-set {
+  color: var(--ink);
+}
+
+.pi-flagname {
+  font-family: "Courier New", monospace;
+  font-size: 0.92em;
+}
+
+#root .pi-flaglist li.is-set .pi-flagname {
+  font-weight: 700;
+}
+
+.pi-flagdesc {
+  grid-column: 2;
+  color: var(--ink-soft);
+  font-size: 0.88em;
+  line-height: 1.35;
+}
+
+.pi-hexdump {
+  display: block;
+  padding: 0.5em 0.6em !important;
+  font-family: "Courier New", monospace;
+  line-height: 1.5;
+  word-spacing: 0.1em;
+  white-space: normal;
+}
+
+/* Badges */
+.pi-state,
+.pi-lp,
+.pi-pill,
+.pi-natts {
+  display: inline-block;
+  padding: 0.05em 0.45em;
+  border-radius: 999px;
+  font-size: 0.82em;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.pi-state.is-live {
+  background: var(--pi-live-bg);
+  color: #13653a;
+}
+
+.pi-state.is-dead {
+  background: var(--pi-dead-bg);
+  color: #9a3412;
+}
+
+.pi-state.is-warn {
+  background: var(--pi-warn-bg);
+  color: #7c5410;
+}
+
+.pi-state.is-hot {
+  background: var(--pi-hot-bg);
+  color: #5b21b6;
+}
+
+.pi-state.is-muted {
+  background: #ebe8e0;
+  color: var(--ink-soft);
+}
+
+.pi-state + .pi-state {
+  margin-left: 0.3em;
+}
+
+.pi-lp {
+  border-radius: 4px;
+  font-family: "Courier New", monospace;
+  font-size: 0.75em;
+  letter-spacing: 0.02em;
+}
+
+.pi-lp.is-lp0 {
+  background: #ebe8e0;
+  color: var(--ink-soft);
+}
+
+.pi-lp.is-lp1 {
+  background: #dde6f7;
+  color: #1e3a8a;
+}
+
+.pi-lp.is-lp2 {
+  background: var(--pi-hot-bg);
+  color: #5b21b6;
+}
+
+.pi-lp.is-lp3 {
+  background: var(--pi-dead-bg);
+  color: #9a3412;
+}
+
+.pi-pills {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.2em;
+  vertical-align: middle;
+}
+
+.pi-pill {
+  padding: 0 0.35em;
+  border-radius: 3px;
+  font-size: 0.72em;
+  background: #ebe8e0;
+  color: var(--ink-soft);
+}
+
+.pi-pill.is-xmin {
+  background: var(--pi-live-bg);
+  color: #13653a;
+}
+
+.pi-pill.is-xmax {
+  background: var(--pi-dead-bg);
+  color: #9a3412;
+}
+
+.pi-pill.is-hot {
+  background: var(--pi-hot-bg);
+  color: #5b21b6;
+}
+
+.pi-natts {
+  padding: 0 0.35em;
+  border-radius: 3px;
+  font-size: 0.72em;
+  background: #dde6f7;
+  color: #1e3a8a;
+}
+
+/* Page map */
+.pi-map {
+  display: block;
+  width: 100%;
+  max-width: 1100px;
+  height: auto;
+  user-select: none;
+}
+
+.pi-map rect {
+  stroke: #fff;
+  stroke-width: 0.6;
+}
+
+.pi-map-offset {
+  font-size: 11px;
+  fill: var(--ink-soft);
+  font-family: "Courier New", monospace;
+}
+
+.pi-map-label {
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--ink);
+  pointer-events: none;
+}
+
+.pi-r-header,
+.pi-r-header rect {
+  fill: #4b5563;
+  background: #4b5563;
+}
+
+.pi-r-header .pi-map-label,
+.pi-r-special .pi-map-label {
+  fill: #fff;
+}
+
+.pi-r-free rect {
+  fill: url(#pi-hatch);
+  stroke: var(--paper-rule);
+}
+
+span.pi-r-free {
+  background: repeating-linear-gradient(45deg, #fff, #fff 3px, #d9d5cb 3px, #d9d5cb 5px);
+}
+
+.pi-hatch-line {
+  stroke: #d9d5cb;
+  stroke-width: 3;
+}
+
+.pi-r-free {
+  fill: #fff;
+}
+
+.pi-r-gap rect {
+  fill: #e5e2da;
+}
+
+.pi-r-items rect {
+  fill: #93c5fd;
+}
+
+.pi-r-special,
+.pi-r-special rect {
+  fill: #0f766e;
+  background: #0f766e;
+}
+
+.pi-r-tuple {
+  cursor: pointer;
+}
+
+.pi-r-tuple rect,
+span.pi-r-tuple {
+  fill: #86d3a6;
+  background: #86d3a6;
+}
+
+.pi-r-tuple.is-dead rect,
+span.pi-r-tuple.is-dead {
+  fill: #f6b896;
+  background: #f6b896;
+}
+
+.pi-r-tuple.is-warn rect,
+span.pi-r-tuple.is-warn {
+  fill: #f6d77a;
+  background: #f6d77a;
+}
+
+.pi-r-tuple:hover rect {
+  filter: brightness(0.93);
+}
+
+.pi-r-tuple.is-selected rect {
+  stroke: var(--pi-accent);
+  stroke-width: 3;
+}
+
+.pi-slot {
+  cursor: pointer;
+}
+
+.pi-slot.is-lp0,
+span.pi-slot.is-lp0 {
+  fill: #cbd5e1;
+  background: #cbd5e1;
+}
+
+.pi-slot.is-lp1,
+span.pi-slot.is-lp1 {
+  fill: #3b82f6;
+  background: #3b82f6;
+}
+
+.pi-slot.is-lp2 {
+  fill: var(--pi-hot);
+}
+
+.pi-slot.is-lp3 {
+  fill: var(--pi-dead);
+}
+
+.pi-map .pi-slot.is-selected {
+  stroke: var(--pi-accent);
+  stroke-width: 2.5;
+}
+
+.pi-arrow {
+  fill: none;
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+.pi-arrow.is-hot {
+  stroke: var(--pi-hot);
+}
+
+.pi-arrow.is-redirect {
+  stroke: var(--pi-hot);
+  stroke-dasharray: 5 4;
+}
+
+.pi-arrow.is-update {
+  stroke: var(--pi-update);
+}
+
+.pi-arrowhead.is-hot,
+.pi-arrowhead.is-redirect {
+  fill: var(--pi-hot);
+}
+
+.pi-arrowhead.is-update {
+  fill: var(--pi-update);
+}
+
+.pi-sel-link {
+  fill: none;
+  stroke: var(--pi-accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 3;
+  pointer-events: none;
+}
+
+/* Legend */
+#root .pi-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35em 1em;
+}
+
+#root .pi-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0;
+}
+
+.pi-swatch {
+  display: inline-block;
+  width: 1.1em;
+  height: 0.8em;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.pi-legend-arrow {
+  display: inline-block;
+  width: 1.6em;
+  border-top: 2px solid var(--pi-update);
+}
+
+.pi-legend-arrow.is-hot {
+  border-top-color: var(--pi-hot);
+}
+
+.pi-legend-arrow.is-redirect {
+  border-top: 2px dashed var(--pi-hot);
+}
+
+/* Chains */
+#root .pi-chains li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25em;
+  margin: 0 0 0.45em;
+  padding: 0;
+}
+
+.pi-chain-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+.pi-chain-arrow {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  font-size: 0.75em;
+  font-weight: 600;
+  color: var(--pi-update);
+  padding: 0 0.2em;
+}
+
+.pi-chain-arrow.is-hot,
+.pi-chain-arrow.is-redirect {
+  color: var(--pi-hot);
+}
+
+.pi-chain-arrow .fa {
+  font-size: 1.4em;
+}
+
+.tool-page .pg-page-inspector .pi-chip,
+.pi-chip {
+  display: inline-block;
+  padding: 0.2em 0.65em;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  font-family: "Courier New", monospace;
+  font-weight: 700;
+  font-size: 0.95em;
+  color: var(--ink) !important;
+  background: #fff;
+}
+
+.tool-page .pg-page-inspector .pi-chip.is-live {
+  background: var(--pi-live-bg);
+}
+
+.tool-page .pg-page-inspector .pi-chip.is-dead {
+  background: var(--pi-dead-bg);
+}
+
+.tool-page .pg-page-inspector .pi-chip.is-warn {
+  background: var(--pi-warn-bg);
+}
+
+.tool-page .pg-page-inspector .pi-chip.is-hot {
+  background: var(--pi-hot-bg);
+}
+
+.tool-page .pg-page-inspector .pi-chip.is-selected {
+  border-color: var(--pi-accent);
+  box-shadow: 0 0 0 1px var(--pi-accent);
+}
+
+.pi-chip.is-external {
+  border: 1px dashed var(--pi-update);
+  background: transparent;
+}
+
+/* Tables */
+.pi-table-wrap {
+  overflow-x: auto;
+}
+
+#root .pi-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+#root .pi-table th {
+  padding: 0.35em 0.5em;
+  color: var(--ink-soft);
+  font-family: "Courier New", monospace;
+  font-size: 0.9em;
+  font-weight: 700;
+  white-space: nowrap;
+  border-bottom: 2px solid var(--paper-rule);
+}
+
+#root .pi-table tbody tr {
+  border: 0;
+  border-bottom: 1px solid var(--paper-rule);
+  background: transparent;
+  cursor: pointer;
+}
+
+#root .pi-table tbody tr:nth-child(2n + 1) {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+#root .pi-table tbody tr:hover {
+  background: #fff;
+}
+
+#root .pi-table tbody tr.is-selected {
+  background: #fde7f1;
+}
+
+#root .pi-table td {
+  padding: 0.3em 0.5em;
+  color: var(--ink);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.pi-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.pi-mono {
+  font-family: "Courier New", monospace;
+}
+
+.pg-page-inspector .pi-canvas code.pi-hex,
+.pg-page-inspector .pi-side code.pi-hex {
+  font-family: "Courier New", monospace;
+  background: transparent;
+  padding: 0;
+}

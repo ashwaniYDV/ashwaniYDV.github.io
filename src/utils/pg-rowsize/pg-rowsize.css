@@ -1,0 +1,453 @@
+/* Row & table size estimator (scrollable page). Classes prefixed `pr-`. */
+.pg-rowsize {
+  --pr-accent: #b4236a;
+  --pr-warn: #f59e0b;
+}
+
+.pr-sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.pr-main {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(520px, 1fr) minmax(420px, 1fr);
+  gap: 0.9em;
+  align-items: start;
+}
+
+@media screen and (max-width: 1100px) {
+  .pr-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pr-pane {
+  min-width: 0;
+  margin: 0;
+  padding: 1em 1.15em 1.2em;
+  border-radius: 6px;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  font-size: 0.85em;
+}
+
+.pr-pane p,
+#root .pr-pane strong {
+  color: var(--ink);
+}
+
+#root .pr-h,
+#root .pr-h3 {
+  color: var(--ink);
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+#root .pr-h {
+  margin: 0.1em 0 0.7em;
+  font-size: 1.2em;
+}
+
+#root .pr-h3 {
+  margin: 1.3em 0 0.55em;
+  padding-bottom: 0.3em;
+  border-bottom: solid 1px var(--paper-rule);
+  font-size: 0.8em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.pr-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 0.8fr;
+  gap: 0.7em 0.8em;
+}
+
+.pr-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+#root .pr-label {
+  display: block;
+  margin: 0 0 0.3em;
+  color: var(--ink-soft);
+  font-size: 0.78em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#root .pr-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 2.1em;
+  margin: 0;
+  padding: 0 0.45em;
+  border: solid 1px #cfcac0;
+  border-radius: 4px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+#root select.pr-input {
+  -webkit-appearance: menulist;
+  appearance: auto;
+  padding: 0 0.2em;
+}
+
+#root .pr-input option {
+  color: var(--ink);
+  background: #fff;
+}
+
+#root .pr-input:focus {
+  outline: 2px solid var(--pr-accent);
+  outline-offset: 0;
+  border-color: transparent;
+}
+
+.pr-hint {
+  margin: 0.6em 0 0;
+  font-size: 0.82em;
+  line-height: 1.45;
+  color: var(--ink-soft) !important;
+}
+
+.pr-error {
+  margin: 0;
+  color: #b42318 !important;
+  font-weight: 600;
+}
+
+/* Column editor */
+.pr-cols {
+  overflow-x: auto;
+}
+
+.pr-col-row {
+  display: grid;
+  grid-template-columns: minmax(7em, 1.1fr) minmax(9em, 1.2fr) minmax(9em, 1.2fr) 4.2em 2.4em 5.6em;
+  gap: 0.35em;
+  align-items: center;
+  min-width: 40em;
+  padding: 0.18em 0;
+}
+
+.pr-col-head > span {
+  font-size: 0.75em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.pr-param-pair {
+  display: flex;
+  gap: 0.25em;
+  min-width: 0;
+}
+
+.pr-param-pair .pr-input:first-child {
+  flex: 1.4;
+}
+
+.pr-param-pair .pr-input {
+  flex: 1;
+}
+
+.pr-fixed {
+  padding-left: 0.45em;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.pr-check {
+  display: flex;
+  justify-content: center;
+}
+
+/* The theme hides native checkboxes; use real ones here. */
+#root .pr-check input[type="checkbox"] {
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  display: inline-block;
+  float: none;
+  position: static;
+  opacity: 1;
+  width: 1.05em;
+  height: 1.05em;
+  margin: 0;
+  z-index: auto;
+  accent-color: var(--pr-accent);
+  cursor: pointer;
+}
+
+.pr-actions {
+  display: flex;
+  gap: 0.1em;
+}
+
+.tool-page .pg-rowsize .pr-icon,
+.tool-page .pg-rowsize .pr-chip,
+.tool-page .pg-rowsize .pr-copy {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  color: var(--ink) !important;
+}
+
+.tool-page .pg-rowsize .pr-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75em;
+  height: 1.75em;
+  border-radius: 4px;
+  color: var(--ink-soft) !important;
+}
+
+.tool-page .pg-rowsize .pr-icon:hover:not(:disabled) {
+  background: #ece8df;
+  color: var(--ink) !important;
+}
+
+.tool-page .pg-rowsize .pr-icon:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.tool-page .pg-rowsize .pr-chip,
+.tool-page .pg-rowsize .pr-copy {
+  padding: 0.3em 0.8em;
+  border-radius: 999px;
+  border: solid 1px #cfcac0;
+  background: #fff;
+  font-size: 0.92em;
+  line-height: 1.4;
+}
+
+.tool-page .pg-rowsize .pr-chip:hover,
+.tool-page .pg-rowsize .pr-copy:hover {
+  border-color: var(--pr-accent);
+}
+
+.tool-page .pg-rowsize .pr-icon:focus-visible,
+.tool-page .pg-rowsize .pr-chip:focus-visible,
+.tool-page .pg-rowsize .pr-copy:focus-visible {
+  outline: 2px solid var(--pr-accent);
+  outline-offset: 2px;
+}
+
+.tool-page .pg-rowsize .pr-add {
+  margin-top: 0.6em;
+}
+
+/* Results */
+.pr-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.75em 0.9em;
+}
+
+.pr-stat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pr-stat-label {
+  font-size: 0.76em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.pr-stat-value {
+  font-size: 1.15em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.pr-stat-hint {
+  font-size: 0.8em;
+  color: var(--ink-soft);
+  line-height: 1.35;
+}
+
+#root .pr-warnings {
+  margin: 0.9em 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+#root .pr-warnings li {
+  margin: 0 0 0.4em;
+  padding: 0.5em 0.7em;
+  border-left: 3px solid var(--pr-warn);
+  background: #fff6e5;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+#root .pr-warnings li .fa {
+  color: #b45309;
+}
+
+.pr-good {
+  margin: 0 0 0.5em;
+  padding: 0.5em 0.7em;
+  border-left: 3px solid #16a34a;
+  background: #eafaf0;
+  line-height: 1.45;
+}
+
+.pr-good .fa {
+  color: #16a34a;
+}
+
+.pr-strip {
+  display: flex;
+  gap: 1px;
+  height: 1.2em;
+  margin: 0 0 0.6em;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #e8e4dc;
+}
+
+.pr-seg {
+  flex-basis: 0;
+  min-width: 2px;
+}
+
+.pr-seg.is-header {
+  background: #4b5163;
+}
+
+.pr-seg.is-pad {
+  background: repeating-linear-gradient(45deg, #e5484d, #e5484d 2px, #fde8e8 2px, #fde8e8 5px);
+}
+
+.pr-table {
+  font-variant-numeric: tabular-nums;
+  overflow-x: auto;
+}
+
+.pr-tr {
+  display: grid;
+  grid-template-columns: minmax(8em, 1.4fr) minmax(8em, 1.4fr) 3em 3.6em 3em 3.6em;
+  gap: 0.5em;
+  min-width: 30em;
+  padding: 0.28em 0;
+  border-bottom: solid 1px var(--paper-rule);
+  align-items: baseline;
+}
+
+.pr-tr > span:nth-child(n + 3) {
+  text-align: right;
+}
+
+.pr-tr.pr-ix {
+  grid-template-columns: minmax(10em, 2fr) 5em 4.5em 3.5em 5em;
+}
+
+.pr-tr.pr-ix > span:nth-child(n + 2) {
+  text-align: right;
+}
+
+.pr-th > span {
+  font-size: 0.76em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.pr-total {
+  font-weight: 700;
+  border-bottom: 0;
+}
+
+.pr-cname {
+  font-family: "Courier New", monospace;
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.pr-ctype {
+  font-family: "Courier New", monospace;
+  color: var(--ink-soft);
+}
+
+.pr-swatch {
+  display: inline-block;
+  width: 0.65em;
+  height: 0.65em;
+  margin-right: 0.4em;
+  border-radius: 2px;
+}
+
+.pr-pad {
+  color: #c0262d;
+  font-weight: 700;
+}
+
+.pr-tag {
+  display: inline-block;
+  margin-left: 0.4em;
+  padding: 0 0.35em;
+  border-radius: 3px;
+  background: #fde8e8;
+  color: #b42318;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72em;
+  font-weight: 700;
+  vertical-align: 0.1em;
+}
+
+.pr-tag.is-soft {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.pr-code-wrap {
+  position: relative;
+}
+
+#root .pr-code {
+  margin: 0;
+  padding: 0.8em 1em;
+  overflow: auto;
+  border: 0;
+  border-radius: 5px;
+  background: #1f2330;
+  color: #e6e8ef;
+  font-family: "Courier New", monospace;
+  font-size: 0.9em;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+.tool-page .pg-rowsize .pr-copy {
+  position: absolute;
+  top: 0.45em;
+  right: 0.45em;
+  padding: 0.25em 0.55em;
+}
+
+.pr-copy-error {
+  color: #ffb4b4;
+}

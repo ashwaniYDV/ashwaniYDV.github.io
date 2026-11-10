@@ -1,0 +1,217 @@
+/* ---------- SQL formatter (sf-*) ---------- */
+.sf-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em 1.1em;
+  flex: none;
+  margin-bottom: 0.6em;
+  font-size: 0.8em;
+}
+
+.sf-field {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0 !important;
+  font-size: 1em !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase;
+}
+
+.tool-page .sf-field select {
+  width: auto;
+  height: 2.2em;
+  padding: 0 2em 0 0.7em;
+  font-size: 1em;
+  letter-spacing: normal;
+  text-transform: none;
+  border-radius: 5px;
+}
+
+.sf-field select:disabled,
+.sf-check input:disabled + span {
+  opacity: 0.45;
+}
+
+.sf-check {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.45em;
+  margin: 0 !important;
+  font-size: 1em !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.08em !important;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* The theme hides native checkboxes in favour of label pseudo-elements; use real ones here. */
+.sf-check input[type="checkbox"] {
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  position: static;
+  opacity: 1;
+  width: 1.05em;
+  height: 1.05em;
+  margin: 0;
+  z-index: auto;
+  accent-color: var(--accent-2, #ff8fb1);
+}
+
+.sf-check span {
+  padding: 0 !important;
+}
+
+.sf-check span::before,
+.sf-check span::after {
+  display: none !important;
+}
+
+.sf-options-note {
+  margin-left: auto;
+  opacity: 0.7;
+  letter-spacing: 0.04em;
+}
+
+.sf-panes {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1em;
+  min-height: 0;
+}
+
+.sf-pane {
+  min-width: 0;
+  min-height: 0;
+}
+
+.tool-page .sf-input,
+.sf-output {
+  box-sizing: border-box;
+  height: 100%;
+  border-radius: 6px;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.tool-page .sf-input {
+  padding: 0.9em 1.1em;
+  font-family: "Courier New", monospace;
+  font-size: 0.85em;
+  line-height: 1.6;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow: auto;
+  caret-color: #e5484d;
+}
+
+.tool-page .sf-input:focus {
+  border-color: #c9c4b8;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(255, 143, 177, 0.45);
+}
+
+.tool-page .sf-input::placeholder {
+  color: #8a8f9c;
+}
+
+.sf-output {
+  overflow: auto;
+}
+
+.sf-code {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+
+.sf-code code.hljs {
+  display: block;
+  padding: 0.9em 1.1em;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font-family: "Courier New", monospace;
+  font-size: 0.85em;
+  line-height: 1.6;
+  white-space: pre;
+  overflow: visible;
+}
+
+.sf-code.is-wrap code.hljs {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Light token colours (atom-one-light) on the paper surface. */
+.sf-code .hljs-keyword,
+.sf-code .hljs-operator.hljs-keyword {
+  color: #a626a4;
+}
+.sf-code .hljs-string,
+.sf-code .hljs-meta .hljs-string {
+  color: #50a14f;
+}
+.sf-code .hljs-number,
+.sf-code .hljs-variable,
+.sf-code .hljs-template-variable {
+  color: #986801;
+}
+.sf-code .hljs-literal {
+  color: #0184bb;
+}
+.sf-code .hljs-type,
+.sf-code .hljs-built_in {
+  color: #c18401;
+}
+.sf-code .hljs-title,
+.sf-code .hljs-title.function_ {
+  color: #4078f2;
+}
+.sf-code .hljs-comment {
+  color: #7d8089;
+  font-style: italic;
+}
+.sf-code .hljs-operator,
+.sf-code .hljs-symbol,
+.sf-code .hljs-punctuation {
+  color: #383a42;
+}
+
+.sf-error {
+  margin: 0;
+  padding: 1em 1.1em;
+  color: #b42318;
+  font-size: 0.85em;
+}
+
+.sf-error-hint {
+  display: block;
+  margin-top: 0.5em;
+  color: var(--ink-soft);
+}
+
+.sf-muted {
+  margin: 0;
+  padding: 1em 1.1em;
+  color: var(--ink-soft);
+  font-size: 0.85em;
+}
+
+@media screen and (max-width: 980px) {
+  .sf-panes {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(10em, 1fr) minmax(10em, 1.4fr);
+  }
+
+  .sf-options-note {
+    display: none;
+  }
+}

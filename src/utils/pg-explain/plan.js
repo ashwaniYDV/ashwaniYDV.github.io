@@ -1,5 +1,6 @@
 /**
- * Parse and analyse PostgreSQL `EXPLAIN (FORMAT JSON)` output.
+ * Parse and analyse PostgreSQL `EXPLAIN (FORMAT JSON)` output. Text-format
+ * EXPLAIN is accepted too: textplan.js converts it to the same JSON shape.
  *
  * Works with or without ANALYZE / BUFFERS. All derived numbers are wall-clock
  * oriented:
@@ -9,6 +10,8 @@
  *   - Exclusive ("self") time, buffers and cost subtract the children's
  *     inclusive values and are clamped at zero.
  */
+
+import { looksLikeTextPlan, parseTextPlan } from "./textplan.js";
 
 export const BLOCK_BYTES = 8192;
 
@@ -357,19 +360,27 @@ function findIssues(nodes, totals) {
  */
 export function parsePlan(text) {
   if (!text.trim()) return { error: "empty" };
-  const json = extractJson(text);
-  if (!json) {
-    return {
-      error: /cost=|->/.test(text)
-        ? "This looks like text-format EXPLAIN. Re-run it with FORMAT JSON and paste that."
-        : "No JSON found. Paste the output of EXPLAIN (FORMAT JSON).",
-    };
-  }
   let data;
-  try {
-    data = JSON.parse(json);
-  } catch (e) {
-    return { error: `Invalid JSON: ${e.message}` };
+  let format = "json";
+  // Text-format EXPLAIN (psql's default) is converted to the FORMAT JSON shape first.
+  const textPlan = looksLikeTextPlan(text) ? parseTextPlan(text) : null;
+  if (textPlan?.data) {
+    data = textPlan.data;
+    format = "text";
+  } else {
+    const json = extractJson(text);
+    if (!json) {
+      return {
+        error: /cost=|->/.test(text)
+          ? "Couldn't read this as a text-format plan. Paste the complete EXPLAIN output, or use FORMAT JSON."
+          : "No plan found. Paste the output of EXPLAIN (text or FORMAT JSON).",
+      };
+    }
+    try {
+      data = JSON.parse(json);
+    } catch (e) {
+      return { error: `Invalid JSON: ${e.message}` };
+    }
   }
 
   const statements = Array.isArray(data) ? data : [data];
@@ -394,6 +405,7 @@ export function parsePlan(text) {
   };
 
   return {
+    format,
     root,
     nodes: ctx.nodes,
     analyzed: ctx.analyzed,

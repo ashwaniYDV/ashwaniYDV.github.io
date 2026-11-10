@@ -1,0 +1,365 @@
+/* ---------- Query fingerprinter (fp-*) ---------- */
+.fp-input textarea {
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  min-height: 9em;
+  resize: vertical;
+  padding: 0.9em 1.1em;
+  font-family: "Courier New", monospace;
+  font-size: 0.85em;
+  line-height: 1.6;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  caret-color: #e5484d;
+}
+
+.tool-page .fp-input textarea:focus {
+  border-color: #c9c4b8;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(255, 143, 177, 0.45);
+}
+
+.tool-page .fp-input textarea::placeholder {
+  color: #8a8f9c;
+}
+
+.fp-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em 1.5em;
+  margin: 0.6em 0 0;
+  font-size: 0.8em;
+}
+
+.fp-check,
+.fp-field {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0 !important;
+  font-size: 1em !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: none !important;
+  cursor: pointer;
+  user-select: none;
+}
+
+.fp-check input[type="checkbox"] {
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  position: static;
+  opacity: 1;
+  width: 1.05em;
+  height: 1.05em;
+  margin: 0;
+  z-index: auto;
+  accent-color: var(--accent-2, #ff8fb1);
+}
+
+.fp-check span {
+  padding: 0 !important;
+}
+
+.fp-check span::before,
+.fp-check span::after {
+  display: none !important;
+}
+
+.tool-page .fp-field select {
+  width: auto;
+  height: 2.2em;
+  padding: 0 2em 0 0.7em;
+  font-size: 1em;
+  border-radius: 5px;
+}
+
+.fp-notice {
+  margin: 1em 0;
+  padding: 0.75em 1em;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border-left: 3px solid var(--accent-2, #ff8fb1);
+  font-size: 0.8em;
+  line-height: 1.6;
+}
+
+.fp-notice code {
+  border: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0 0.3em;
+}
+
+.fp-results {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding-bottom: 1em;
+}
+
+.fp-card,
+.fp-groups {
+  border-radius: 6px;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.fp-card {
+  padding: 1em 1.2em 1.1em;
+  font-size: 0.9em;
+}
+
+.fp-card-head,
+.fp-group-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em 0.8em;
+}
+
+#root .fp-h {
+  margin: 0 0.5em 0 0;
+  color: var(--ink);
+  font-size: 1em;
+  letter-spacing: 0.05em;
+}
+
+#root .fp-h3 {
+  margin: 0 0 0.4em;
+  color: var(--ink);
+  font-size: 0.8em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.fp-label {
+  color: var(--ink-soft);
+  font-size: 0.75em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.fp-spacer {
+  flex: 1;
+}
+
+.fp-tool code.fp-hash {
+  padding: 0.15em 0.5em;
+  border: solid 1px #d6d1c4;
+  border-radius: 4px;
+  background-color: #efece4;
+  color: #6b3fa0;
+  font-family: "Courier New", monospace;
+  font-size: 0.85em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.fp-btn {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  padding: 0.25em 0.7em;
+  border-radius: 4px;
+  border: solid 1px #d6d1c4;
+  color: var(--ink) !important;
+  font-size: 0.8em;
+  line-height: 1.5;
+}
+
+.fp-btn:hover {
+  background-color: #efece4;
+}
+
+.fp-btn:focus-visible {
+  outline: 2px solid #c2185b;
+  outline-offset: 2px;
+}
+
+.fp-code {
+  margin: 0.7em 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.fp-code code.hljs {
+  display: block;
+  margin: 0;
+  padding: 0.7em 0.9em;
+  border: solid 1px var(--paper-rule);
+  border-radius: 5px;
+  background-color: #f3f1ec;
+  color: var(--ink);
+  font-family: "Courier New", monospace;
+  font-size: 0.9em;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.fp-code.is-compact code.hljs {
+  padding: 0.45em 0.7em;
+  font-size: 0.82em;
+}
+
+/* Light token colours on the paper surface. */
+.fp-code .hljs-keyword {
+  color: #a626a4;
+}
+.fp-code .hljs-string {
+  color: #50a14f;
+}
+.fp-code .hljs-number,
+.fp-code .hljs-variable,
+.fp-code .hljs-template-variable {
+  color: #986801;
+}
+.fp-code .hljs-literal {
+  color: #0184bb;
+}
+.fp-code .hljs-type,
+.fp-code .hljs-built_in {
+  color: #c18401;
+}
+.fp-code .hljs-title {
+  color: #4078f2;
+}
+.fp-code .hljs-comment {
+  color: #7d8089;
+  font-style: italic;
+}
+.fp-code .hljs-operator,
+.fp-code .hljs-symbol,
+.fp-code .hljs-punctuation {
+  color: #383a42;
+}
+
+.fp-consts {
+  margin-top: 0.9em;
+}
+
+.fp-consts dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14em, 1fr));
+  gap: 0.3em 1em;
+  margin: 0;
+}
+
+.fp-const {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  min-width: 0;
+}
+
+.fp-const dt {
+  flex: none;
+  color: #986801;
+  font-family: "Courier New", monospace;
+  font-weight: 700;
+}
+
+.fp-const dd {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fp-tool .fp-const code,
+.fp-tool .fp-example code {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 0.9em;
+}
+
+.fp-muted {
+  margin: 0.6em 0 0;
+  color: var(--ink-soft);
+  font-size: 0.85em;
+}
+
+.fp-results > .fp-muted {
+  color: inherit;
+  opacity: 0.8;
+}
+
+.fp-summary {
+  margin: 0;
+  font-size: 0.95em;
+}
+
+.fp-groups {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.fp-group {
+  margin: 0;
+  padding: 0.8em 1.1em 0.9em;
+  border-bottom: solid 1px var(--paper-rule);
+  font-size: 0.9em;
+}
+
+.fp-group:last-child {
+  border-bottom: 0;
+}
+
+.fp-count {
+  min-width: 3.5em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.fp-bar {
+  display: inline-block;
+  width: 8em;
+  height: 0.55em;
+  border-radius: 3px;
+  background-color: #e6e2d8;
+  overflow: hidden;
+}
+
+.fp-bar span {
+  display: block;
+  height: 100%;
+  background-color: #d6457a;
+}
+
+.fp-pct {
+  min-width: 3em;
+  color: var(--ink-soft);
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+}
+
+.fp-example {
+  margin-top: 0.4em;
+  font-size: 0.82em;
+  color: var(--ink-soft);
+}
+
+.fp-example summary {
+  cursor: pointer;
+}
+
+.fp-example code {
+  display: block;
+  margin-top: 0.3em;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

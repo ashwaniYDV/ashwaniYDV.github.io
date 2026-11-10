@@ -644,16 +644,16 @@ export default function ExplainVisualizer({ heading }) {
       {view === "input" ? (
         <div className="pe-input">
           <p className="pe-input-hint">
-            Run <code>EXPLAIN (ANALYZE, BUFFERS, VERBOSE, FORMAT JSON) &lt;query&gt;;</code> and paste the output. Copying
-            straight from psql (with its <code>+</code> line wraps) works too. Add <code>SETTINGS</code> to see non-default
-            planner settings.
+            Run <code>EXPLAIN (ANALYZE, BUFFERS, VERBOSE, FORMAT JSON) &lt;query&gt;;</code> and paste the output. Plain
+            text-format EXPLAIN works too, and so does copying straight from psql (header, <code>+</code> line wraps and
+            all). Add <code>SETTINGS</code> to see non-default planner settings.
           </p>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             spellCheck={false}
-            placeholder='[ { "Plan": { "Node Type": ... } } ]'
-            aria-label="EXPLAIN JSON"
+            placeholder={'[ { "Plan": { "Node Type": ... } } ]\n\nor text format:\n\nLimit  (cost=... rows=10 width=48) (actual time=...)\n  ->  Sort  ...'}
+            aria-label="EXPLAIN output (JSON or text)"
           />
           <div className="pe-input-actions">
             {plan.error && plan.error !== "empty" && (
@@ -703,7 +703,9 @@ export default function ExplainVisualizer({ heading }) {
         <span>
           {plan.error
             ? "No plan"
-            : `${plan.nodes.length} nodes · ${plan.issues.length} findings${plan.analyzed ? "" : " · estimates only"}`}
+            : `${plan.nodes.length} nodes · ${plan.issues.length} findings${plan.analyzed ? "" : " · estimates only"}${
+                plan.format === "text" ? " · read from text format" : ""
+              }`}
         </span>
         <span>Parsed locally, nothing is uploaded.</span>
         <SaveStatus status={status} />

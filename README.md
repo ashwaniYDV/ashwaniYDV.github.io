@@ -51,7 +51,10 @@ draft: true   # optional: only visible in `npm run dev`
 Tools are grouped into sections, each with its own index page:
 
 - `/utils`: general tools (Notepad, Markdown editor, Text diff checker, Whiteboard).
-- `/pgutils`: PostgreSQL tools (EXPLAIN visualizer at `/pgutils/explain`).
+- `/pgutils`: PostgreSQL tools: EXPLAIN visualizer and plan diff, pg_stat_statements analyzer,
+  index advisor, SQL formatter, query fingerprinter, page/tuple inspector, MVCC visibility simulator,
+  lock conflict matrix, LSN/WAL and XID wraparound calculators, autovacuum thresholds, row/table size
+  estimator, postgresql.conf tuner, settings diff and pg_cron helper.
 
 Data stays in the visitor's browser via `localStorage`; nothing is sent to a server.
 To add a section, add an entry to `sections` in `src/utils/registry.js`.

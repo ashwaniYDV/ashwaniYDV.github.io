@@ -1,0 +1,436 @@
+/* ---------- pg_cron schedule helper (pc-*) ---------- */
+.pc-card {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 1em 1.2em 1.2em;
+  border-radius: 6px;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  font-size: 0.9em;
+}
+
+.pc-schedule {
+  margin-bottom: 1em;
+}
+
+.pg-cron label,
+.pc-big-label {
+  display: block;
+  margin: 0 0 0.35em;
+  color: var(--ink-soft);
+  font-size: 0.72em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tool-page .pg-cron input:not([type="checkbox"]),
+.tool-page .pg-cron textarea,
+.tool-page .pg-cron select {
+  box-sizing: border-box;
+  width: 100%;
+  background-color: #ffffff;
+  color: var(--ink);
+  border: solid 1px #d6d1c4;
+  border-radius: 5px;
+  box-shadow: none;
+  font-size: 0.95em;
+}
+
+.tool-page .pg-cron input:not([type="checkbox"]),
+.tool-page .pg-cron select {
+  height: 2.4em;
+  padding: 0 0.7em;
+}
+
+.tool-page .pg-cron textarea {
+  height: auto;
+  resize: vertical;
+  padding: 0.5em 0.7em;
+  font-family: "Courier New", monospace;
+  line-height: 1.5;
+}
+
+.tool-page .pg-cron input::placeholder,
+.tool-page .pg-cron textarea::placeholder {
+  color: #9a9ea8;
+}
+
+.tool-page .pg-cron input:focus,
+.tool-page .pg-cron textarea:focus,
+.tool-page .pg-cron select:focus {
+  border-color: #c2185b;
+  box-shadow: 0 0 0 3px rgba(255, 143, 177, 0.4);
+}
+
+.tool-page .pg-cron .pc-expr {
+  height: 2.1em;
+  font-family: "Courier New", monospace;
+  font-size: 1.6em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.tool-page .pg-cron .pc-expr.is-invalid {
+  border-color: #d92d20;
+}
+
+.pc-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  margin-top: 0.6em;
+}
+
+.pc-chip,
+.pc-btn {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  border: solid 1px #d6d1c4;
+  border-radius: 999px;
+  color: var(--ink) !important;
+  font-size: 0.8em;
+  line-height: 1.5;
+}
+
+.pc-chip {
+  padding: 0.2em 0.8em;
+  background-color: #ffffff;
+}
+
+.pc-chip:hover,
+.pc-btn:hover {
+  background-color: #efece4;
+}
+
+.pc-chip.is-active {
+  border-color: #c2185b;
+  background-color: #fde7ef;
+}
+
+.pc-btn {
+  padding: 0.15em 0.7em;
+  border-radius: 4px;
+}
+
+.pc-chip:focus-visible,
+.pc-btn:focus-visible {
+  outline: 2px solid #c2185b;
+  outline-offset: 2px;
+}
+
+.pc-fields {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.5em;
+  margin-top: 0.9em;
+}
+
+.pc-fieldbox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2em;
+  padding: 0.45em 0.3em;
+  border-radius: 5px;
+  background-color: #f3f1ec;
+  border: solid 1px var(--paper-rule);
+  text-align: center;
+  min-width: 0;
+}
+
+.pg-cron .pc-fieldbox code {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: #6b3fa0;
+  font-size: 1.1em;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.pc-fieldbox span {
+  color: var(--ink-soft);
+  font-size: 0.7em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pc-explain {
+  margin-top: 0.9em;
+}
+
+.pc-sentence {
+  margin: 0;
+  font-size: 1.25em;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.pc-tzline {
+  margin: 0.15em 0 0;
+  color: var(--ink-soft);
+  font-size: 0.85em;
+}
+
+.pg-cron .pc-notes {
+  margin: 0.6em 0 0;
+  padding-left: 1.2em;
+  list-style: disc;
+  color: var(--ink-soft);
+  font-size: 0.9em;
+}
+
+.pg-cron .pc-notes li {
+  margin: 0.15em 0;
+  padding-left: 0;
+}
+
+.pc-error {
+  margin: 0.5em 0;
+  color: #b42318;
+  font-weight: 700;
+}
+
+.pc-muted {
+  margin: 0.6em 0 0;
+  color: var(--ink-soft);
+  font-size: 0.85em;
+}
+
+.pc-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 1em;
+  align-items: start;
+  padding-bottom: 1em;
+}
+
+.pc-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  margin-bottom: 0.6em;
+}
+
+#root .pc-h {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1em;
+  letter-spacing: 0.06em;
+}
+
+#root .pc-h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.78em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pc-tzrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.6em 1em;
+  margin-bottom: 0.8em;
+}
+
+.pc-tz {
+  flex: 1 1 12em;
+  min-width: 0;
+}
+
+.pg-cron .pc-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  height: 2.4em;
+  margin: 0;
+  color: var(--ink);
+  font-family: "Courier New", monospace;
+  font-size: 0.85em;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+}
+
+.pc-check input[type="checkbox"] {
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  position: static;
+  opacity: 1;
+  width: 1.05em;
+  height: 1.05em;
+  margin: 0;
+  z-index: auto;
+  accent-color: #c2185b;
+}
+
+.pc-check span {
+  padding: 0 !important;
+  color: var(--ink);
+}
+
+.pc-check span::before,
+.pc-check span::after {
+  display: none !important;
+}
+
+.pc-table-wrap {
+  overflow-x: auto;
+}
+
+.pg-cron table.pc-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  font-size: 0.88em;
+  font-variant-numeric: tabular-nums;
+}
+
+.pg-cron .pc-table tr,
+.pg-cron .pc-table tbody tr:nth-child(2n + 1) {
+  background-color: transparent;
+  border: 0;
+}
+
+.pg-cron .pc-table tbody tr:nth-child(2n) {
+  background-color: #f3f1ec;
+}
+
+.pg-cron .pc-table th,
+.pg-cron .pc-table td {
+  padding: 0.35em 0.6em;
+  border-bottom: solid 1px var(--paper-rule);
+  color: var(--ink);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.pg-cron .pc-table th {
+  color: var(--ink-soft);
+  font-size: 0.8em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: none;
+}
+
+.pg-cron .pc-table td:first-child,
+.pg-cron .pc-table th:first-child {
+  color: var(--ink-soft);
+  width: 2em;
+}
+
+.pc-explainer {
+  margin-top: 1em;
+  padding-top: 0.8em;
+  border-top: solid 1px var(--paper-rule);
+  font-size: 0.9em;
+}
+
+.pc-explainer p {
+  margin: 0.4em 0 0;
+  line-height: 1.6;
+}
+
+.pg-cron .pc-explainer code {
+  border: 0;
+  padding: 0 0.25em;
+  background-color: #efece4;
+  color: var(--ink);
+}
+
+.pc-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em 0.8em;
+  margin-bottom: 0.4em;
+}
+
+.pc-wide {
+  grid-column: 1 / -1;
+}
+
+.pc-sql {
+  margin-top: 0.8em;
+}
+
+.pc-sql-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.3em;
+}
+
+.pc-code {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.pc-code code.hljs {
+  display: block;
+  margin: 0;
+  padding: 0.6em 0.8em;
+  border: solid 1px var(--paper-rule);
+  border-radius: 5px;
+  background-color: #f3f1ec;
+  color: var(--ink);
+  font-family: "Courier New", monospace;
+  font-size: 0.88em;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.pc-code .hljs-keyword {
+  color: #a626a4;
+}
+.pc-code .hljs-string {
+  color: #50a14f;
+}
+.pc-code .hljs-number,
+.pc-code .hljs-variable {
+  color: #986801;
+}
+.pc-code .hljs-literal {
+  color: #0184bb;
+}
+.pc-code .hljs-type,
+.pc-code .hljs-built_in {
+  color: #c18401;
+}
+.pc-code .hljs-title {
+  color: #4078f2;
+}
+.pc-code .hljs-comment {
+  color: #7d8089;
+  font-style: italic;
+}
+.pc-code .hljs-operator,
+.pc-code .hljs-punctuation,
+.pc-code .hljs-symbol {
+  color: #383a42;
+}
+
+@media screen and (max-width: 980px) {
+  .pc-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 560px) {
+  .pc-fields {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .pc-form {
+    grid-template-columns: 1fr;
+  }
+}

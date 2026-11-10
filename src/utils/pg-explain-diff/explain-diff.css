@@ -1,0 +1,532 @@
+/* EXPLAIN plan diff. Viewport-locked like the visualizer; reuses the shared pe-* pane,
+   stats and input styles from utils.css and adds ped-* pieces on top. */
+.pg-explain-diff {
+  --ped-worse: #c8322f;
+  --ped-worse-bg: #fde8e7;
+  --ped-better: #1a7f37;
+  --ped-better-bg: #e3f5e8;
+  --ped-neutral: #2f5fb3;
+  --ped-neutral-bg: #e6eefb;
+  --ped-changed: #b26a00;
+  --ped-accent: #b4236a;
+}
+
+.pg-explain-diff .util-toolbar .button.small {
+  padding: 0 0.85em;
+}
+
+/* ---------- input ---------- */
+.ped-inputs {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9em;
+  min-height: 0;
+}
+
+.ped-input-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  min-height: 0;
+  min-width: 0;
+}
+
+#root .ped-input-label {
+  display: block;
+  margin: 0;
+  font-size: 0.75em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ped-input-status {
+  min-height: 1.4em;
+  font-size: 0.8em;
+}
+
+.ped-input-ok {
+  opacity: 0.75;
+}
+
+@media screen and (max-width: 980px) {
+  .ped-inputs {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+
+/* ---------- layout ---------- */
+.ped-main {
+  grid-template-columns: minmax(300px, 400px) 1fr;
+}
+
+@media screen and (max-width: 980px) {
+  .ped-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ped-canvas {
+  font-size: 0.9em;
+}
+
+/* ---------- buttons on paper ---------- */
+.tool-page .pg-explain-diff .ped-card,
+.tool-page .pg-explain-diff .ped-link,
+.tool-page .pg-explain-diff .ped-back {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  color: var(--ink) !important;
+}
+
+.tool-page .pg-explain-diff .ped-card:focus-visible,
+.tool-page .pg-explain-diff .ped-link:focus-visible,
+.tool-page .pg-explain-diff .ped-back:focus-visible {
+  outline: 2px solid var(--ped-accent);
+  outline-offset: 2px;
+}
+
+.tool-page .pg-explain-diff .ped-back {
+  color: var(--ped-accent) !important;
+  font-weight: 600;
+}
+
+.tool-page .pg-explain-diff .ped-back:hover {
+  text-decoration: underline;
+}
+
+/* ---------- labels, chips ---------- */
+.ped-label {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25em 0.45em;
+}
+
+.ped-type {
+  font-weight: 700;
+}
+
+.ped-type s {
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.ped-target {
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+
+.ped-target.is-old {
+  font-style: italic;
+}
+
+.ped-subplan {
+  padding: 0 0.4em;
+  border-radius: 3px;
+  background: #ece9e1;
+  font-size: 0.85em;
+}
+
+.ped-ids {
+  margin-right: 0.45em;
+  color: var(--ink-soft);
+  font-size: 0.8em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ped-status {
+  display: inline-block;
+  padding: 0 0.45em;
+  border-radius: 3px;
+  font-size: 0.68em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.75;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: #ece9e1;
+}
+
+.ped-status.is-changed {
+  color: #fff;
+  background: var(--ped-changed);
+}
+
+.ped-status.is-added {
+  color: #fff;
+  background: var(--ped-neutral);
+}
+
+.ped-status.is-removed {
+  color: #fff;
+  background: #6b7080;
+}
+
+.ped-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em;
+  margin-top: 0.4em;
+}
+
+.ped-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  padding: 0.05em 0.5em;
+  border-radius: 4px;
+  border: 1px solid var(--paper-rule);
+  background: #f6f4ef;
+  color: var(--ink);
+  font-size: 0.8em;
+  line-height: 1.6;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.ped-chip-label {
+  color: var(--ink-soft);
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ped-chip-pct {
+  font-weight: 700;
+}
+
+.ped-chip.is-worse {
+  border-color: #f3b4b1;
+  background: var(--ped-worse-bg);
+  color: var(--ped-worse);
+}
+
+.ped-chip.is-better {
+  border-color: #a9dcb7;
+  background: var(--ped-better-bg);
+  color: var(--ped-better);
+}
+
+.ped-chip.is-neutral {
+  border-color: #b8cbef;
+  background: var(--ped-neutral-bg);
+  color: var(--ped-neutral);
+}
+
+.ped-chip.is-worse .ped-chip-label,
+.ped-chip.is-better .ped-chip-label,
+.ped-chip.is-neutral .ped-chip-label {
+  color: inherit;
+  opacity: 0.8;
+}
+
+.ped-tone.is-worse,
+.ped-delta.is-worse {
+  color: var(--ped-worse) !important;
+}
+
+.ped-tone.is-better,
+.ped-delta.is-better {
+  color: var(--ped-better) !important;
+}
+
+.ped-never {
+  display: block;
+  margin-top: 0.3em;
+  color: var(--ink-soft);
+  font-size: 0.8em;
+  font-style: italic;
+}
+
+/* ---------- cards ---------- */
+.tool-page .pg-explain-diff .ped-card {
+  display: block;
+  max-width: 46em;
+  padding: 0.45em 0.7em 0.5em;
+  border: 1px solid var(--paper-rule);
+  border-left: 4px solid #b9b4a8;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  line-height: 1.4;
+}
+
+.tool-page .pg-explain-diff .ped-card:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.14);
+}
+
+.tool-page .pg-explain-diff .ped-card.is-changed {
+  border-left-color: var(--ped-changed);
+}
+
+.tool-page .pg-explain-diff .ped-card.is-added {
+  border-left-color: var(--ped-neutral);
+  background: #f7faff;
+}
+
+.tool-page .pg-explain-diff .ped-card.is-removed {
+  border-left-color: #6b7080;
+  border-style: dashed solid dashed solid;
+  background: #f4f3f0;
+}
+
+.tool-page .pg-explain-diff .ped-card.is-removed .ped-type {
+  text-decoration: line-through;
+  text-decoration-color: rgba(31, 35, 48, 0.4);
+}
+
+.tool-page .pg-explain-diff .ped-card.is-selected {
+  box-shadow: 0 0 0 2px var(--ped-accent);
+}
+
+.ped-card-head {
+  display: flex;
+  align-items: baseline;
+}
+
+/* ---------- merged tree ---------- */
+#root .ped-tree,
+#root .ped-children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#root .ped-tree li,
+#root .ped-children li {
+  padding-left: 0;
+}
+
+#root .ped-children {
+  margin-left: 1.2em;
+}
+
+#root .ped-children > li {
+  position: relative;
+  padding-left: 1.4em;
+}
+
+#root .ped-children > li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-left: 2px solid #b9b4a8;
+}
+
+#root .ped-children > li:last-child::before {
+  bottom: auto;
+  height: 1.6em;
+}
+
+#root .ped-children > li::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1.6em;
+  width: 1.2em;
+  border-top: 2px solid #b9b4a8;
+}
+
+.ped-row {
+  padding: 0.25em 0;
+}
+
+/* ---------- side by side ---------- */
+.ped-sbs {
+  min-width: 720px;
+}
+
+.ped-sbs-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 8.5em minmax(0, 1fr);
+  gap: 0.6em;
+  align-items: center;
+  padding: 0.25em 0;
+  border-bottom: 1px solid var(--paper-rule);
+}
+
+.ped-sbs-head {
+  position: sticky;
+  top: -1em;
+  z-index: 1;
+  padding: 0.4em 0;
+  background: #f3f1ec;
+  font-size: 0.75em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.ped-sbs-head > span:nth-child(2) {
+  text-align: center;
+}
+
+.ped-sbs-delta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1em;
+  font-size: 0.85em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.ped-sbs-delta.is-worse {
+  color: var(--ped-worse);
+}
+
+.ped-sbs-delta.is-better {
+  color: var(--ped-better);
+}
+
+.ped-cell {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.ped-cell .ped-card {
+  width: 100%;
+}
+
+.ped-placeholder {
+  display: block;
+  padding: 0.6em 0.7em;
+  border: 1px dashed #c9c4b8;
+  border-radius: 6px;
+  color: var(--ink-soft);
+  font-size: 0.8em;
+  font-style: italic;
+}
+
+/* ---------- sidebar ---------- */
+.ped-hero {
+  display: flex;
+  flex-direction: column;
+  margin: 0.4em 0 0.9em;
+  padding: 0.7em 0.85em;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.ped-hero-value {
+  font-size: 1.45em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.ped-hero-hint {
+  font-weight: 700;
+}
+
+#root .ped-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#root .ped-list > li {
+  margin: 0 0 0.35em;
+  padding: 0;
+}
+
+.tool-page .pg-explain-diff .ped-link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2em 0.5em;
+  width: 100%;
+  padding: 0.4em 0.6em;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.tool-page .pg-explain-diff .ped-link:hover {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+
+.ped-list-title {
+  flex: 1;
+  min-width: 10em;
+  font-weight: 600;
+}
+
+.ped-delta {
+  min-width: 5.5em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.ped-table {
+  font-variant-numeric: tabular-nums;
+}
+
+.ped-tr {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1.25fr;
+  gap: 0.4em;
+  padding: 0.22em 0;
+  border-bottom: 1px solid var(--paper-rule);
+}
+
+.ped-tr > span:not(:first-child) {
+  text-align: right;
+}
+
+.ped-th {
+  font-size: 0.78em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.ped-kv-row {
+  display: grid;
+  gap: 0.15em;
+  padding: 0.35em 0.4em;
+  border-bottom: 1px solid var(--paper-rule);
+}
+
+.ped-kv-row.is-diff {
+  background: #fff8e8;
+}
+
+.ped-kv-key {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+#root .ped-kv-val {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 0.9em;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.ped-kv-side {
+  display: inline-block;
+  min-width: 3.4em;
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 0.85em;
+}
+
+.ped-legend {
+  margin: 1.2em 0 0;
+  font-size: 0.8em;
+  color: var(--ink-soft) !important;
+  line-height: 2;
+}

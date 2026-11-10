@@ -1,0 +1,558 @@
+/* MVCC visibility simulator (/pgutils/mvcc). Prefix: mv-. Viewport-locked: two scrolling panes. */
+.pg-mvcc {
+  --mv-yes: #1f9d55;
+  --mv-yes-bg: #d9f2e3;
+  --mv-no: #c2410c;
+  --mv-no-bg: #fde3d6;
+  --mv-warn-bg: #fff6e5;
+  --mv-accent: #b4236a;
+  --mv-me: #2563eb;
+}
+
+.mv-main {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(360px, 480px) 1fr;
+  gap: 0.9em;
+  min-height: 0;
+}
+
+@media screen and (max-width: 980px) {
+  .mv-main {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    overflow: auto;
+  }
+}
+
+.mv-pane {
+  min-height: 0;
+  overflow: auto;
+  padding: 0.9em 1.1em 1.25em;
+  border-radius: 6px;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  font-size: 0.85em;
+}
+
+.mv-result {
+  background-color: #f3f1ec;
+}
+
+.mv-pane p {
+  color: var(--ink);
+}
+
+#root .mv-h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 1.2em 0 0.55em;
+  padding-bottom: 0.3em;
+  border-bottom: solid 1px var(--paper-rule);
+  color: var(--ink-soft);
+  font-size: 0.8em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+#root .mv-h3.mv-first {
+  margin-top: 0.1em;
+}
+
+.mv-small {
+  margin: 0.3em 0 0;
+  color: var(--ink-soft) !important;
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+.pg-mvcc code.mv-code {
+  margin: 0 0.1em;
+  padding: 0 0.3em;
+  border: 0;
+  border-radius: 3px;
+  background: #ebe8e0;
+  color: var(--ink);
+  font-size: 0.92em;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Reset every button drawn on paper. */
+.tool-page .pg-mvcc .mv-preset,
+.tool-page .pg-mvcc .mv-status-btn,
+.tool-page .pg-mvcc .mv-mini {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.tool-page .pg-mvcc .mv-preset:focus-visible,
+.tool-page .pg-mvcc .mv-status-btn:focus-visible,
+.tool-page .pg-mvcc .mv-mini:focus-visible,
+.pg-mvcc .mv-check input:focus-visible {
+  outline: 2px solid var(--mv-accent);
+  outline-offset: 2px;
+}
+
+/* Presets */
+.mv-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35em;
+}
+
+.tool-page .pg-mvcc .mv-preset {
+  padding: 0.3em 0.7em;
+  border-radius: 999px;
+  border: 1px solid var(--paper-rule);
+  background: #fff;
+  color: var(--ink) !important;
+  font-size: 0.92em;
+  line-height: 1.4;
+}
+
+.tool-page .pg-mvcc .mv-preset:hover {
+  border-color: var(--mv-accent);
+}
+
+.tool-page .pg-mvcc .mv-preset.is-active {
+  background: var(--mv-accent);
+  border-color: var(--mv-accent);
+  color: #fff !important;
+}
+
+.mv-preset-note {
+  margin: 0.6em 0 0;
+  padding: 0.45em 0.7em;
+  border-left: 3px solid var(--mv-accent);
+  background: #fdf2f7;
+  line-height: 1.45;
+}
+
+/* Fields */
+.mv-xid-row {
+  display: grid;
+  grid-template-columns: 7.5em 1fr;
+  gap: 0.75em;
+  margin-bottom: 0.5em;
+  align-items: start;
+}
+
+.mv-grid4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6em;
+}
+
+.mv-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+#root .pg-mvcc .mv-label {
+  display: block;
+  margin: 0 0 0.25em;
+  color: var(--ink-soft);
+  font-size: 0.82em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tool-page .pg-mvcc input.mv-input {
+  height: 2.1em;
+  padding: 0 0.6em;
+  border: 1px solid #cfcabd;
+  border-radius: 5px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 1em;
+  font-variant-numeric: tabular-nums;
+}
+
+.tool-page .pg-mvcc input.mv-input:focus {
+  border-color: var(--mv-accent);
+  box-shadow: 0 0 0 2px rgba(180, 35, 106, 0.2);
+}
+
+.tool-page .pg-mvcc input.mv-input::placeholder {
+  color: #a5a093 !important;
+}
+
+.mv-mono {
+  font-family: "Courier New", monospace;
+}
+
+.mv-hint {
+  margin-top: 0.2em;
+  color: var(--ink-soft);
+  font-size: 0.82em;
+}
+
+/* Status picker */
+.mv-status {
+  display: inline-flex;
+  border: 1px solid #cfcabd;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #fff;
+  height: 2.1em;
+}
+
+.tool-page .pg-mvcc .mv-status-btn {
+  padding: 0 0.75em;
+  color: var(--ink-soft) !important;
+  line-height: 2.1em;
+  white-space: nowrap;
+}
+
+.tool-page .pg-mvcc .mv-status-btn + .mv-status-btn {
+  border-left: 1px solid #cfcabd;
+}
+
+.tool-page .pg-mvcc .mv-status-btn.is-active.is-committed {
+  background: var(--mv-yes-bg);
+  color: #13653a !important;
+  font-weight: 700;
+}
+
+.tool-page .pg-mvcc .mv-status-btn.is-active.is-aborted {
+  background: var(--mv-no-bg);
+  color: #9a3412 !important;
+  font-weight: 700;
+}
+
+.tool-page .pg-mvcc .mv-status-btn.is-active.is-in-progress {
+  background: #fdf0c8;
+  color: #7c5410 !important;
+  font-weight: 700;
+}
+
+/* Hint checkboxes */
+.mv-hints {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 0.75em;
+}
+
+.mv-hint-group {
+  margin: 0;
+  padding: 0.4em 0.6em 0.5em;
+  border: 1px solid var(--paper-rule);
+  border-radius: 5px;
+  min-width: 0;
+}
+
+.mv-hint-group legend {
+  padding: 0 0.3em;
+  color: var(--ink-soft);
+  font-size: 0.8em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+#root .pg-mvcc .mv-check {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.45em;
+  align-items: center;
+  margin: 0.15em 0;
+  color: var(--ink);
+  font-size: 1em;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+}
+
+/* The theme hides native checkboxes; bring them back. */
+.pg-mvcc .mv-check input[type="checkbox"] {
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  display: inline-block;
+  float: none;
+  position: static;
+  opacity: 1;
+  width: 1em;
+  height: 1em;
+  margin: 0;
+  z-index: auto;
+  accent-color: var(--mv-accent);
+  grid-row: span 2;
+}
+
+.mv-check-name {
+  font-family: "Courier New", monospace;
+  font-size: 0.92em;
+  font-weight: 700;
+}
+
+.mv-check-help {
+  grid-column: 2;
+  color: var(--ink-soft);
+  font-size: 0.82em;
+  line-height: 1.2;
+}
+
+.tool-page .pg-mvcc .mv-mini {
+  margin-top: 0.45em;
+  padding: 0.2em 0.6em;
+  border-radius: 4px;
+  border: 1px solid #9cc3e6;
+  background: #eef6fd;
+  color: #1e4f80 !important;
+  font-size: 0.9em;
+}
+
+.tool-page .pg-mvcc .mv-mini.is-active {
+  background: #1e4f80;
+  color: #fff !important;
+}
+
+/* Verdict */
+.mv-verdict {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.75em 1em;
+  border-radius: 6px;
+  font-size: 1.15em;
+}
+
+.mv-verdict .fa {
+  font-size: 1.6em;
+}
+
+.mv-verdict strong {
+  display: block;
+  font-size: 1.2em;
+  color: inherit;
+}
+
+.mv-verdict-sub {
+  display: block;
+  font-size: 0.75em;
+  opacity: 0.85;
+}
+
+.mv-verdict.is-visible {
+  background: var(--mv-yes-bg);
+  color: #13653a;
+  border: 1px solid #a8dcbd;
+}
+
+.mv-verdict.is-invisible {
+  background: var(--mv-no-bg);
+  color: #9a3412;
+  border: 1px solid #f3b99b;
+}
+
+.mv-verdict.is-error {
+  background: var(--mv-warn-bg);
+  color: #7c5410;
+  border: 1px solid #f1d38a;
+  font-size: 1em;
+}
+
+#root .mv-warnings {
+  list-style: none;
+  margin: 0.6em 0 0;
+  padding: 0;
+}
+
+#root .mv-warnings li {
+  margin: 0 0 0.3em;
+  padding: 0.4em 0.65em;
+  border-left: 3px solid #e0a106;
+  background: var(--mv-warn-bg);
+  color: #6b4a0c;
+  line-height: 1.4;
+}
+
+/* Number line */
+.mv-line {
+  display: block;
+  width: 100%;
+  max-width: 760px;
+  height: auto;
+  font-family: "Courier New", monospace;
+}
+
+.mv-band.is-past,
+.mv-key.is-past {
+  fill: #b9e4c9;
+  background: #b9e4c9;
+}
+
+.mv-band.is-mid,
+.mv-key.is-mid {
+  fill: #dfe6dc;
+  background: #dfe6dc;
+}
+
+.mv-band.is-future,
+.mv-key.is-future {
+  fill: #f6c9b3;
+  background: #f6c9b3;
+}
+
+.mv-xip,
+.mv-key.is-xip {
+  fill: #c2410c;
+  background: #c2410c;
+}
+
+.mv-bound {
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.mv-tick {
+  font-size: 11px;
+  fill: var(--ink-soft);
+}
+
+.mv-tick.is-xip {
+  fill: #9a3412;
+  font-weight: 700;
+}
+
+.mv-mark line {
+  stroke-width: 1.5;
+}
+
+.mv-mark text {
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.mv-mark.is-xmin line,
+.mv-mark.is-xmin circle {
+  stroke: #13653a;
+  fill: #13653a;
+}
+
+.mv-mark.is-xmin text {
+  fill: #13653a;
+}
+
+.mv-mark.is-xmax line,
+.mv-mark.is-xmax circle {
+  stroke: #9a3412;
+  fill: #9a3412;
+}
+
+.mv-mark.is-xmax text {
+  fill: #9a3412;
+}
+
+.mv-mark.is-me line,
+.mv-mark.is-me circle {
+  stroke: var(--mv-me);
+  fill: var(--mv-me);
+}
+
+.mv-mark.is-me text {
+  fill: var(--mv-me);
+}
+
+.mv-line-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.mv-key {
+  display: inline-block;
+  width: 1em;
+  height: 0.7em;
+  margin-left: 0.6em;
+  border-radius: 2px;
+}
+
+.mv-key:first-child {
+  margin-left: 0;
+}
+
+/* Steps */
+#root .mv-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: mv-step;
+}
+
+#root .mv-steps li {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.2em 0.75em;
+  margin: 0 0 0.35em;
+  padding: 0.45em 0.7em 0.45em 2.3em;
+  border-radius: 5px;
+  background: #fff;
+  border: 1px solid var(--paper-rule);
+  line-height: 1.45;
+  counter-increment: mv-step;
+}
+
+#root .mv-steps li::before {
+  content: counter(mv-step);
+  position: absolute;
+  left: 0.6em;
+  top: 0.5em;
+  width: 1.3em;
+  height: 1.3em;
+  border-radius: 50%;
+  background: #ebe8e0;
+  color: var(--ink-soft);
+  font-size: 0.85em;
+  font-weight: 700;
+  line-height: 1.3em;
+  text-align: center;
+}
+
+#root .mv-steps li.is-true {
+  background: var(--mv-yes-bg);
+  border-color: #a8dcbd;
+}
+
+#root .mv-steps li.is-false {
+  background: var(--mv-no-bg);
+  border-color: #f3b99b;
+}
+
+#root .mv-steps li.is-true::before {
+  background: var(--mv-yes);
+  color: #fff;
+}
+
+#root .mv-steps li.is-false::before {
+  background: var(--mv-no);
+  color: #fff;
+}
+
+.mv-step-text {
+  flex: 1 1 22em;
+  color: var(--ink);
+}
+
+.pg-mvcc code.mv-step-code {
+  align-self: flex-start;
+  margin: 0;
+  padding: 0 0.35em;
+  border: 0;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--ink-soft);
+  font-size: 0.78em;
+  white-space: nowrap;
+}

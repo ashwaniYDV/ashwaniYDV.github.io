@@ -1,0 +1,386 @@
+/* PGUtils: LSN & WAL calculator (scrollable page of paper cards). */
+.pg-lsn {
+  --lsn-accent: #b4236a;
+  --lsn-bad: #c62828;
+  --lsn-send: #8a93a6;
+  --lsn-write: #3b82f6;
+  --lsn-flush: #f59e0b;
+  --lsn-replay: #e5484d;
+}
+
+.lsn-grid {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1em;
+  align-items: start;
+}
+
+.lsn-stack {
+  display: grid;
+  gap: 1em;
+}
+
+.lsn-card-wide {
+  grid-column: 1 / -1;
+}
+
+@media screen and (max-width: 980px) {
+  .lsn-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lsn-card {
+  min-width: 0;
+  padding: 1em 1.2em 1.2em;
+  border-radius: 6px;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  font-size: 0.88em;
+}
+
+#root .lsn-h {
+  margin: 0 0 0.2em;
+  color: var(--ink);
+  font-size: 1.15em;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.lsn-card p {
+  color: var(--ink);
+}
+
+.lsn-sub,
+.lsn-muted {
+  margin: 0 0 0.8em;
+  color: var(--ink-soft) !important;
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+.lsn-card code {
+  margin: 0 0.1em;
+  padding: 0.05em 0.35em;
+  border: solid 1px var(--paper-rule);
+  background: #f1eee7;
+  color: var(--ink);
+  font-size: 0.92em;
+}
+
+.lsn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8em;
+  margin-bottom: 0.6em;
+}
+
+.lsn-field {
+  display: flex;
+  flex: 1 1 12em;
+  flex-direction: column;
+  min-width: 0;
+}
+
+#root .lsn-label {
+  margin: 0 0 0.3em;
+  color: var(--ink-soft);
+  font-size: 0.75em;
+  letter-spacing: 0.1em;
+}
+
+#root .lsn-input,
+#root .lsn-textarea {
+  height: 2.4em;
+  padding: 0 0.7em;
+  border: solid 1px #cfcabf;
+  border-radius: 5px;
+  background: #fff;
+  color: var(--ink);
+  font-family: "Courier New", monospace;
+  font-size: 1em;
+}
+
+#root select.lsn-input {
+  appearance: auto;
+  -webkit-appearance: menulist;
+  font-family: inherit;
+}
+
+#root select.lsn-input option {
+  background: #fff;
+  color: var(--ink);
+}
+
+#root .lsn-textarea {
+  height: 11em;
+  padding: 0.6em 0.8em;
+  font-size: 0.85em;
+  line-height: 1.45;
+  white-space: pre;
+  overflow: auto;
+  resize: vertical;
+}
+
+#root .lsn-input:focus,
+#root .lsn-textarea:focus {
+  border-color: var(--lsn-accent);
+  box-shadow: 0 0 0 3px rgba(180, 35, 106, 0.18);
+}
+
+#root .lsn-input.is-invalid {
+  border-color: var(--lsn-bad);
+}
+
+.lsn-input::placeholder,
+.lsn-textarea::placeholder {
+  color: #9a9fae;
+}
+
+.lsn-msg {
+  margin-top: 0.3em;
+  color: var(--ink-soft);
+  font-size: 0.85em;
+}
+
+.lsn-card .lsn-msg.is-error,
+.lsn-msg.is-error {
+  color: var(--lsn-bad) !important;
+}
+
+.lsn-outs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13em, 1fr));
+  gap: 0.55em 1em;
+  margin: 0.4em 0 0.8em;
+}
+
+.lsn-out {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.lsn-out-label,
+.lsn-result-label {
+  color: var(--ink-soft);
+  font-size: 0.75em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lsn-out-value {
+  overflow-wrap: anywhere;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.is-mono {
+  font-family: "Courier New", monospace;
+}
+
+.lsn-result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+  margin: 0.2em 0 0.9em;
+  padding: 0.6em 0.8em;
+  border-left: 4px solid var(--lsn-accent);
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.lsn-result.is-neg {
+  border-left-color: var(--lsn-write);
+}
+
+.lsn-result-big {
+  overflow-wrap: anywhere;
+  font-size: 1.35em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.lsn-result-small {
+  color: var(--ink-soft);
+  font-size: 0.88em;
+}
+
+/* Buttons on paper: the theme forces white button text. */
+.tool-page .pg-lsn .lsn-copy {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  margin-left: 0.4em;
+  padding: 0.15em 0.55em;
+  border: solid 1px #cfcabf;
+  border-radius: 4px;
+  background: #f6f4ef;
+  color: var(--ink) !important;
+  font-family: inherit;
+  font-size: 0.6em;
+  font-weight: 600;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.tool-page .pg-lsn .lsn-copy:hover {
+  background: #ece8df;
+}
+
+.tool-page .pg-lsn .lsn-copy:focus-visible {
+  outline: 2px solid var(--lsn-accent);
+  outline-offset: 2px;
+}
+
+.lsn-query {
+  margin: 0 0 0.8em;
+}
+
+.lsn-query summary {
+  color: var(--lsn-accent);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lsn-query pre {
+  margin: 0.5em 0;
+  padding: 0.7em 0.9em;
+  border-radius: 5px;
+  background: #2b2f3d;
+  color: #e9ecf3;
+  font-size: 0.9em;
+  white-space: pre-wrap;
+}
+
+.lsn-query .lsn-copy {
+  font-size: 0.8em !important;
+  margin-left: 0 !important;
+}
+
+.lsn-repl-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(12em, 1fr);
+  gap: 0.8em;
+  align-items: start;
+  margin-bottom: 0.8em;
+}
+
+@media screen and (max-width: 736px) {
+  .lsn-repl-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lsn-table-wrap {
+  overflow-x: auto;
+}
+
+#root .lsn-table {
+  width: 100%;
+  margin: 0 0 0.6em;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+#root .lsn-table tr {
+  border: 0;
+  border-bottom: solid 1px var(--paper-rule);
+  background: transparent;
+}
+
+#root .lsn-table th,
+#root .lsn-table td {
+  padding: 0.45em 0.6em;
+  color: var(--ink);
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+#root .lsn-table thead th {
+  color: var(--ink-soft);
+  font-size: 0.8em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+#root .lsn-table td.is-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#root .lsn-table td.is-strong {
+  font-weight: 700;
+}
+
+.lsn-bar-col {
+  width: 30%;
+  min-width: 10em;
+}
+
+.lsn-bar {
+  display: flex;
+  height: 0.8em;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #ece8df;
+}
+
+.lsn-bar > span {
+  height: 100%;
+}
+
+.lsn-bar .is-send,
+.lsn-swatch.is-send {
+  background: var(--lsn-send);
+}
+
+.lsn-bar .is-write,
+.lsn-swatch.is-write {
+  background: var(--lsn-write);
+}
+
+.lsn-bar .is-flush,
+.lsn-swatch.is-flush {
+  background: var(--lsn-flush);
+}
+
+.lsn-bar .is-replay,
+.lsn-swatch.is-replay {
+  background: var(--lsn-replay);
+}
+
+.lsn-tag {
+  margin-left: 0.45em;
+  padding: 0.05em 0.4em;
+  border-radius: 3px;
+  background: #ece8df;
+  color: var(--ink-soft);
+  font-size: 0.75em;
+  font-weight: 600;
+}
+
+.lsn-card .lsn-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em 1.2em;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.85em;
+}
+
+.lsn-swatch {
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 2px;
+  vertical-align: -0.05em;
+}

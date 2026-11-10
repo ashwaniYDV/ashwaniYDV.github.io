@@ -1,0 +1,494 @@
+/* Autovacuum threshold calculator (scrollable page). Classes prefixed `pa-`. */
+.pg-autovac {
+  --pa-accent: #b4236a;
+  --pa-ok: #16a34a;
+  --pa-near: #f59e0b;
+  --pa-due: #e5484d;
+  --pa-off: #9ca3af;
+}
+
+.pa-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.pa-main {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(240px, 280px) 1fr;
+  gap: 0.9em;
+  align-items: start;
+}
+
+@media screen and (max-width: 900px) {
+  .pa-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pa-single,
+.pa-bulk {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9em;
+  min-width: 0;
+}
+
+.pa-pane {
+  min-width: 0;
+  margin: 0;
+  padding: 1em 1.15em 1.2em;
+  border-radius: 6px;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  font-size: 0.85em;
+}
+
+.pa-settings {
+  position: sticky;
+  top: calc(var(--bar-h, 48px) + 0.8em);
+}
+
+@media screen and (max-width: 900px) {
+  .pa-settings {
+    position: static;
+  }
+}
+
+.pa-pane p,
+#root .pa-pane strong,
+#root .pa-pane em {
+  color: var(--ink);
+}
+
+#root .pa-h {
+  margin: 0.1em 0 0.7em;
+  color: var(--ink);
+  font-size: 1.2em;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.pa-row-between {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+
+.pa-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 0.7em 0.8em;
+}
+
+.pa-settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55em;
+}
+
+.pa-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+#root .pa-label {
+  display: block;
+  margin: 0 0 0.3em;
+  padding: 0;
+  color: var(--ink-soft);
+  font-size: 0.78em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  font-family: "Courier New", monospace;
+}
+
+#root .pa-fieldset .pa-label {
+  font-family: inherit;
+  text-transform: uppercase;
+}
+
+.pa-hint {
+  margin: 0.3em 0 0;
+  font-size: 0.82em;
+  line-height: 1.45;
+  color: var(--ink-soft) !important;
+}
+
+.pa-prefix {
+  margin: 0.8em 0 0.5em;
+}
+
+#root .pa-input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 2.2em;
+  padding: 0 0.6em;
+  border: solid 1px #cfcac0;
+  border-radius: 5px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+#root select.pa-input {
+  -webkit-appearance: menulist;
+  appearance: auto;
+}
+
+#root .pa-input option {
+  color: var(--ink);
+  background: #fff;
+}
+
+#root .pa-input:focus,
+#root .pa-textarea:focus {
+  outline: 2px solid var(--pa-accent);
+  outline-offset: 0;
+  border-color: transparent;
+}
+
+#root .pa-ic {
+  margin: 0;
+  padding: 0 0.25em;
+  border: 0;
+  border-radius: 3px;
+  background: #ece8df;
+  color: var(--ink);
+  font-size: 0.95em;
+}
+
+.pa-fieldset {
+  margin: 0.9em 0 0.8em;
+  padding: 0;
+  border: 0;
+}
+
+.pa-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35em;
+}
+
+.tool-page .pg-autovac .pa-chip,
+.tool-page .pg-autovac .pa-copy {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  padding: 0.3em 0.75em;
+  border-radius: 999px;
+  border: solid 1px #cfcac0;
+  background: #fff;
+  color: var(--ink) !important;
+  font-size: 0.92em;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.tool-page .pg-autovac .pa-chip:hover,
+.tool-page .pg-autovac .pa-copy:hover {
+  border-color: var(--pa-accent);
+}
+
+.tool-page .pg-autovac .pa-chip.is-on {
+  background: var(--pa-accent);
+  border-color: var(--pa-accent);
+  color: #fff !important;
+}
+
+.tool-page .pg-autovac .pa-chip:focus-visible,
+.tool-page .pg-autovac .pa-copy:focus-visible {
+  outline: 2px solid var(--pa-accent);
+  outline-offset: 2px;
+}
+
+.tool-page .pg-autovac .pa-small {
+  padding: 0.1em 0.6em;
+  font-size: 0.85em;
+}
+
+.tool-page .pg-autovac .pa-reset {
+  margin-top: 0.9em;
+}
+
+.pa-note {
+  margin: 0 0 0.75em;
+  padding: 0.55em 0.75em;
+  border-left: 3px solid var(--pa-near);
+  background: #fff6e5;
+}
+
+.pa-error {
+  margin: 0.5em 0 0;
+  color: #b42318 !important;
+  font-weight: 600;
+}
+
+/* Gauges */
+.pa-gauges {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.8em;
+}
+
+.pa-gauge {
+  padding: 0.75em 0.85em;
+  border-radius: 6px;
+  background: #fff;
+  border-top: 4px solid var(--pa-ok);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.pa-gauge.is-near {
+  border-top-color: var(--pa-near);
+}
+
+.pa-gauge.is-due {
+  border-top-color: var(--pa-due);
+}
+
+.pa-gauge.is-off {
+  border-top-color: var(--pa-off);
+}
+
+.pa-gauge-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.3em;
+  margin-bottom: 0.45em;
+}
+
+.pa-gauge-title {
+  font-weight: 700;
+}
+
+.pa-status {
+  font-size: 0.85em;
+  font-weight: 700;
+  color: var(--pa-ok);
+}
+
+.is-near .pa-status {
+  color: #b45309;
+}
+
+.is-due .pa-status {
+  color: #c0262d;
+}
+
+.is-off .pa-status {
+  color: var(--ink-soft);
+}
+
+.pa-bar,
+.pa-minibar {
+  display: block;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8e4dc;
+}
+
+.pa-bar {
+  height: 0.6em;
+}
+
+.pa-minibar {
+  height: 0.3em;
+  margin-top: 0.2em;
+}
+
+.pa-bar > span,
+.pa-minibar > span {
+  display: block;
+  height: 100%;
+  background: var(--pa-ok);
+}
+
+.is-near .pa-bar > span,
+.is-near .pa-minibar > span {
+  background: var(--pa-near);
+}
+
+.is-due .pa-bar > span,
+.is-due .pa-minibar > span {
+  background: var(--pa-due);
+}
+
+.is-off .pa-bar > span,
+.is-off .pa-minibar > span {
+  background: var(--pa-off);
+}
+
+.pa-gauge-nums {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5em;
+  margin-top: 0.4em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+}
+
+.pa-gauge-nums strong {
+  font-size: 1.15em;
+}
+
+.pa-formula {
+  margin: 0.45em 0 0;
+  font-family: "Courier New", monospace;
+  font-size: 0.85em;
+  color: var(--ink-soft) !important;
+  word-break: break-word;
+}
+
+.pa-remaining {
+  margin: 0.35em 0 0;
+  font-size: 0.88em;
+}
+
+/* Code */
+.pa-code-wrap {
+  position: relative;
+}
+
+#root .pa-code {
+  margin: 0;
+  padding: 0.8em 1em;
+  overflow: auto;
+  border: 0;
+  border-radius: 5px;
+  background: #1f2330;
+  color: #e6e8ef;
+  font-family: "Courier New", monospace;
+  font-size: 0.92em;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+#root .pa-query {
+  margin: 0.6em 0;
+  font-size: 0.85em;
+}
+
+.tool-page .pg-autovac .pa-copy {
+  position: absolute;
+  top: 0.45em;
+  right: 0.45em;
+  padding: 0.25em 0.55em;
+}
+
+.pa-details {
+  margin-top: 0.7em;
+}
+
+.pa-details summary {
+  margin-bottom: 0.4em;
+  cursor: pointer;
+  color: var(--pa-accent);
+  font-weight: 600;
+}
+
+/* Bulk */
+#root .pa-textarea {
+  box-sizing: border-box;
+  width: 100%;
+  height: 16em;
+  padding: 0.7em 0.9em;
+  resize: vertical;
+  border: solid 1px #cfcac0;
+  border-radius: 5px;
+  background: #fff;
+  color: var(--ink);
+  font-family: "Courier New", monospace;
+  font-size: 0.88em;
+  line-height: 1.45;
+  white-space: pre;
+  overflow: auto;
+}
+
+.pa-table {
+  font-variant-numeric: tabular-nums;
+  overflow-x: auto;
+}
+
+.pa-tr {
+  display: grid;
+  grid-template-columns: minmax(12em, 2fr) minmax(6em, 0.8fr) repeat(3, minmax(6.5em, 1fr)) 4.5em;
+  gap: 0.6em;
+  min-width: 46em;
+  padding: 0.4em 0;
+  border-bottom: solid 1px var(--paper-rule);
+  align-items: center;
+}
+
+.pa-th > span {
+  font-size: 0.78em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.pa-tname {
+  font-family: "Courier New", monospace;
+  font-weight: 700;
+  word-break: break-all;
+}
+
+.pa-tag {
+  display: inline-block;
+  margin-left: 0.4em;
+  padding: 0 0.4em;
+  border-radius: 3px;
+  background: #ede9fe;
+  color: #5b21b6;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72em;
+  font-weight: 700;
+  vertical-align: 0.1em;
+  word-break: normal;
+}
+
+.pa-tag.is-warn {
+  background: #fde8e8;
+  color: #b42318;
+}
+
+.pa-num {
+  text-align: right;
+}
+
+.pa-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.pa-cell-text {
+  font-weight: 600;
+}
+
+.pa-cell.is-due .pa-cell-text {
+  color: #c0262d;
+}
+
+.pa-cell.is-near .pa-cell-text {
+  color: #b45309;
+}
+
+.pa-cell.is-off .pa-cell-text {
+  color: var(--ink-soft);
+}
+
+.pa-copy-error {
+  color: #ffb4b4;
+}

@@ -1,0 +1,548 @@
+/* PGUtils: pg_stat_statements analyzer. Viewport-locked: table | details, each scrolling. */
+.pg-statements {
+  --pss-hot: #e5484d;
+  --pss-warm: #f59e0b;
+  --pss-low: #3b82f6;
+  --pss-accent: #b4236a;
+}
+
+.pg-statements .util-toolbar .button.small {
+  padding: 0 0.85em;
+}
+
+.tool-page .pg-statements .pss-search,
+.tool-page .pg-statements .pss-select {
+  width: 15em;
+  height: 32px;
+  margin: 0;
+  padding: 0 0.7em;
+  border-radius: 5px;
+  font-size: 0.85em;
+  line-height: 32px;
+}
+
+.tool-page .pg-statements .pss-search {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: solid 1px rgba(255, 255, 255, 0.3);
+}
+
+.tool-page .pg-statements .pss-search::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.tool-page .pg-statements .pss-select {
+  width: 10.5em;
+  padding-right: 1.8em;
+}
+
+.tool-page .pg-statements .pss-select option {
+  color: #1f2330;
+  background: #fff;
+}
+
+/* Reset theme button styles for everything drawn on paper. */
+.tool-page .pg-statements .pss-seg button,
+.tool-page .pg-statements .pss-copy,
+.tool-page .pg-statements .pss-sort,
+.tool-page .pg-statements .pss-qbtn,
+.tool-page .pg-statements .pss-back,
+.tool-page .pg-statements .pss-link {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.tool-page .pg-statements .pss-seg button:focus-visible,
+.tool-page .pg-statements .pss-copy:focus-visible,
+.tool-page .pg-statements .pss-sort:focus-visible,
+.tool-page .pg-statements .pss-qbtn:focus-visible,
+.tool-page .pg-statements .pss-back:focus-visible,
+.tool-page .pg-statements .pss-link:focus-visible {
+  outline: 2px solid var(--pss-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Input view ---------- */
+.pss-input {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  gap: 0.5em;
+}
+
+.pss-sql {
+  flex: none;
+  padding: 0.7em 0.9em 0.6em;
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.pss-sql-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em 0.8em;
+  margin-bottom: 0.5em;
+}
+
+.pss-sql-title,
+.pss-paste-label {
+  font-size: 0.75em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.pss-sql-title {
+  color: var(--ink-soft);
+}
+
+#root .pss-paste-label {
+  margin: 0.3em 0 0;
+  color: inherit;
+  opacity: 0.9;
+}
+
+.pss-seg {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid #cfcabd;
+  border-radius: 5px;
+}
+
+.tool-page .pg-statements .pss-seg button {
+  padding: 0.2em 0.75em;
+  font-size: 0.78em;
+  color: var(--ink-soft) !important;
+  background: #fff;
+}
+
+.tool-page .pg-statements .pss-seg button + button {
+  border-left: 1px solid #cfcabd;
+}
+
+.tool-page .pg-statements .pss-seg button.is-on {
+  color: #fff !important;
+  background: var(--pss-accent);
+}
+
+.tool-page .pg-statements .pss-copy {
+  padding: 0.2em 0.7em;
+  border: 1px solid #cfcabd;
+  border-radius: 5px;
+  font-size: 0.78em;
+  color: var(--ink) !important;
+  background: #fff;
+}
+
+.tool-page .pg-statements .pss-copy:hover {
+  border-color: var(--pss-accent);
+}
+
+#root .pss-sql-code,
+#root .pss-query {
+  margin: 0;
+  padding: 0.6em 0.8em;
+  max-height: 11em;
+  overflow: auto;
+  border: 1px solid var(--paper-rule);
+  border-radius: 5px;
+  background: #f3f1ec;
+  color: var(--ink);
+  font-family: "Courier New", monospace;
+  font-size: 0.78em;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.pss-sql-note {
+  margin: 0.45em 0 0;
+  font-size: 0.75em;
+  line-height: 1.5;
+  color: var(--ink-soft) !important;
+}
+
+#root .pg-statements code {
+  padding: 0 0.3em;
+  border: 0;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.07);
+  color: inherit;
+  font-size: 0.95em;
+}
+
+.tool-page .pss-input textarea {
+  flex: 1;
+  min-height: 6em;
+  padding: 0.8em 1em;
+  font-family: "Courier New", monospace;
+  font-size: 0.8em;
+  line-height: 1.5;
+  white-space: pre;
+  overflow: auto;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.tool-page .pss-input textarea:focus {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(255, 143, 177, 0.45);
+}
+
+.pss-input-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+}
+
+.pss-error {
+  color: #ffb4b4;
+  font-size: 0.85em;
+}
+
+/* ---------- Table view ---------- */
+.pss-main {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  gap: 0.9em;
+  min-height: 0;
+}
+
+.pss-table-pane,
+.pss-side {
+  min-height: 0;
+  overflow: auto;
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+  border: solid 1px var(--paper-rule);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.pss-side {
+  padding: 1em 1.1em 1.25em;
+  font-size: 0.85em;
+}
+
+@media screen and (max-width: 980px) {
+  .pss-main {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+
+#root .pss-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.78em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+#root .pss-table th,
+#root .pss-table td {
+  padding: 0.45em 0.5em;
+  border: 0;
+  border-bottom: 1px solid var(--paper-rule);
+  color: var(--ink);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+#root .pss-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #efece5;
+  font-size: 0.9em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+#root .pss-table tbody tr,
+#root .pss-table tbody tr:nth-child(2n + 1) {
+  background: transparent;
+  cursor: pointer;
+}
+
+#root .pss-table tbody tr:hover {
+  background: #f1eee6;
+}
+
+#root .pss-table tbody tr.is-selected {
+  background: #fde7f0;
+}
+
+#root .pss-table .is-num {
+  text-align: right;
+}
+
+.tool-page .pg-statements .pss-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  color: inherit !important;
+}
+
+.pss-sort .fa-sort {
+  opacity: 0.35;
+}
+
+.pss-rank {
+  color: var(--ink-soft) !important;
+}
+
+#root .pss-table td.pss-qcell {
+  max-width: 17em;
+}
+
+#root .pss-table td.pss-flagcell {
+  min-width: 9em;
+  white-space: normal;
+}
+
+.tool-page .pg-statements .pss-qbtn {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: "Courier New", monospace;
+  color: #1d4f80 !important;
+}
+
+#root .pss-table td.pss-pct {
+  position: relative;
+  min-width: 4.5em;
+}
+
+.pss-bar {
+  position: absolute;
+  right: 0.5em;
+  bottom: 4px;
+  max-width: calc(100% - 1em);
+  height: 3px;
+  border-radius: 2px;
+  background: var(--pss-hot);
+  opacity: 0.7;
+}
+
+.pss-flags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25em;
+}
+
+.pss-flag {
+  display: inline-block;
+  padding: 0 0.45em;
+  border-radius: 3px;
+  font-size: 0.85em;
+  font-weight: 700;
+  line-height: 1.7;
+  color: #fff;
+  background: var(--pss-low);
+  cursor: help;
+}
+
+.pss-flag.is-high {
+  background: var(--pss-hot);
+}
+
+.pss-flag.is-medium {
+  background: var(--pss-warm);
+  color: #3a2600;
+}
+
+.pss-empty {
+  padding: 2em;
+  text-align: center;
+  color: var(--ink-soft) !important;
+}
+
+/* ---------- Side panel ---------- */
+.pss-side p {
+  color: var(--ink);
+}
+
+#root .pss-h,
+#root .pss-h3 {
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+#root .pss-h {
+  margin: 0.2em 0;
+  font-size: 1.25em;
+}
+
+#root .pss-h3 {
+  margin: 1.1em 0 0.5em;
+  padding-bottom: 0.3em;
+  border-bottom: solid 1px var(--paper-rule);
+  font-size: 0.8em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.pss-query-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5em;
+  margin-bottom: 0.5em;
+  border-bottom: solid 1px var(--paper-rule);
+}
+
+#root .pss-query-head .pss-h3 {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+.pss-query-head .pss-copy {
+  margin-bottom: 0.3em;
+}
+
+#root .pss-query {
+  max-height: 16em;
+  font-size: 0.95em;
+}
+
+.pss-sub {
+  margin: 0 0 0.5em;
+  font-size: 0.9em;
+  color: var(--ink-soft) !important;
+  word-break: break-all;
+}
+
+.tool-page .pg-statements .pss-back,
+.tool-page .pg-statements .pss-link {
+  color: var(--pss-accent) !important;
+  font-weight: 600;
+}
+
+.tool-page .pg-statements .pss-back:hover,
+.tool-page .pg-statements .pss-link:hover {
+  text-decoration: underline;
+}
+
+.tool-page .pg-statements .pss-link:disabled {
+  color: var(--ink-soft) !important;
+  cursor: default;
+  text-decoration: none;
+}
+
+.pss-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.6em 0.9em;
+}
+
+.pss-stat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pss-stat-label {
+  font-size: 0.78em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.pss-stat-value {
+  font-size: 1.05em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.pss-stat-hint {
+  font-size: 0.8em;
+  color: var(--ink-soft);
+}
+
+.pss-kv-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 0.5em;
+  padding: 0.2em 0;
+  border-bottom: 1px solid var(--paper-rule);
+  font-variant-numeric: tabular-nums;
+}
+
+.pss-kv-row > span:not(:first-child) {
+  text-align: right;
+}
+
+.pss-kv-row > span:last-child {
+  color: var(--ink-soft);
+}
+
+#root .pss-findings,
+#root .pss-flag-counts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#root .pss-findings > li {
+  margin: 0 0 0.5em;
+  padding: 0.5em 0.7em;
+  border-left: 4px solid var(--pss-low);
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+#root .pss-findings > li.is-high {
+  border-left-color: var(--pss-hot);
+}
+
+#root .pss-findings > li.is-medium {
+  border-left-color: var(--pss-warm);
+}
+
+#root .pss-findings strong {
+  color: var(--ink);
+}
+
+.pss-findings p {
+  margin: 0.25em 0 0;
+  line-height: 1.5;
+}
+
+#root .pss-flag-counts > li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.3em 0;
+  padding-left: 0;
+  border-bottom: 1px solid var(--paper-rule);
+}
+
+.pss-note {
+  padding: 0.5em 0.7em;
+  border-left: 3px solid var(--pss-warm);
+  background: #fff6e5;
+}
+
+.pss-muted {
+  margin-top: 1.2em;
+  line-height: 1.5;
+  color: var(--ink-soft) !important;
+}

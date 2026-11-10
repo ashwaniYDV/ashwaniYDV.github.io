@@ -27,6 +27,21 @@ body.is-tool-fixed {
 .tool-page > .md-editor,
 .tool-page > .diff-checker,
 .tool-page > .pg-explain,
+.tool-page > .pg-explain-diff,
+.tool-page > .pg-statements,
+.tool-page > .pg-index-advisor,
+.tool-page > .sf-tool,
+.tool-page > .fp-tool,
+.tool-page > .pg-page-inspector,
+.tool-page > .pg-mvcc,
+.tool-page > .pg-locks,
+.tool-page > .pg-lsn,
+.tool-page > .pg-xid,
+.tool-page > .pg-autovac,
+.tool-page > .pg-rowsize,
+.tool-page > .pg-tuner,
+.tool-page > .pg-settings-diff,
+.tool-page > .pg-cron,
 .tool-page > .whiteboard {
   display: flex;
   flex: 1;
