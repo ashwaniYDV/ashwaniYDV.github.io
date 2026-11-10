@@ -600,23 +600,25 @@ export default function ExplainVisualizer({ heading }) {
           </div>
         )}
         <span className="util-toolbar-spacer" />
-        {view === "plan" && (
-          <>
-            <button type="button" className="button small" onClick={() => setCollapsed(new Set())} title="Expand all nodes">
-              <i className="fa fa-expand" aria-hidden="true"></i>
-              <span className="pe-sr">Expand all</span>
-            </button>
-            <button
-              type="button"
-              className="button small"
-              title="Collapse all but the top level"
-              onClick={() => setCollapsed(new Set(plan.nodes.filter((n) => n.depth >= 1 && n.children.length).map((n) => n.id)))}
-            >
-              <i className="fa fa-compress" aria-hidden="true"></i>
-              <span className="pe-sr">Collapse all</span>
-            </button>
-          </>
-        )}
+        {view === "plan" &&
+          (() => {
+            // One toggle: expand everything if anything is collapsed, otherwise collapse below the top level.
+            const collapsible = plan.nodes.filter((n) => n.depth >= 1 && n.children.length).map((n) => n.id);
+            const expand = collapsed.size > 0;
+            const label = expand ? "Expand all nodes" : "Collapse all but the top level";
+            return (
+              <button
+                type="button"
+                className="button small"
+                title={label}
+                aria-label={label}
+                disabled={!expand && collapsible.length === 0}
+                onClick={() => setCollapsed(expand ? new Set() : new Set(collapsible))}
+              >
+                <i className={`fa ${expand ? "fa-expand" : "fa-compress"}`} aria-hidden="true"></i>
+              </button>
+            );
+          })()}
         <button
           type="button"
           className="button small"
